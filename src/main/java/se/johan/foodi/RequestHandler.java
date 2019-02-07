@@ -28,7 +28,7 @@ import se.johan.foodi.util.RequestUtils;
  *
  * @author johan
  */
-@Path("api")
+@Path("")
 public class RequestHandler {
 
     @EJB
@@ -57,20 +57,6 @@ public class RequestHandler {
     @Path("recipes")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRecipeComments() {
-        List<Recipe> recipes = new RecipeFacade().findAll();
-        String recipesJson = JSON.toJSONString(recipes);
-        return Response.ok(recipesJson).build();
-    }
-
-    /**
-     * Outputs all recipe comments.
-     *
-     * @return
-     */
-    @GET
-    @Path("/recipes")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRecipes() {
         List<Recipe> recipes = new RecipeFacade().findAll();
         String recipesJson = JSON.toJSONString(recipes);
         return Response.ok(recipesJson).build();
