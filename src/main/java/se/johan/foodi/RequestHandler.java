@@ -33,6 +33,9 @@ public class RequestHandler {
 
     @EJB
     RequestFacade requestFacade;
+    
+    @EJB
+    RecipeFacade recipeFacade;
 
     @POST
     @Path("/recipe")
@@ -57,7 +60,7 @@ public class RequestHandler {
     @Path("recipes")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRecipeComments() {
-        List<Recipe> recipes = new RecipeFacade().findAll();
+        List<Recipe> recipes = recipeFacade.findAll();
         String recipesJson = JSON.toJSONString(recipes);
         return Response.ok(recipesJson).build();
     }

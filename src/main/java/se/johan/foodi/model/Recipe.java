@@ -110,6 +110,16 @@ public class Recipe implements Serializable {
         this.imageUri = imageUri;
     }
 
+    /**
+     * @return
+     */
+    public String getImageUrl() {
+        return String.format(
+                "http://via.placeholder.com/128x128",
+                imageUri
+        );
+    }
+
     @XmlTransient
     public List<Category> getCategoryList() {
         return categoryList;
@@ -152,5 +162,5 @@ public class Recipe implements Serializable {
     public String toString() {
         return "se.johan.foodi.model.Recipe[ id=" + id + " ]";
     }
-    
+
 }
