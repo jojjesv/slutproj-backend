@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -48,6 +50,9 @@ public class Step implements Serializable {
     @NotNull
     @Column(name = "position")
     private short position;
+    @JoinColumn(name = "recipe_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Recipe recipeId;
 
     public Step() {
     }
@@ -86,6 +91,14 @@ public class Step implements Serializable {
         this.position = position;
     }
 
+    public Recipe getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(Recipe recipeId) {
+        this.recipeId = recipeId;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -108,7 +121,7 @@ public class Step implements Serializable {
 
     @Override
     public String toString() {
-        return "se.johan.foodi.model.Step[ id=" + id + " ]";
+        return "se.johan.foodi.model2.Step[ id=" + id + " ]";
     }
     
 }
