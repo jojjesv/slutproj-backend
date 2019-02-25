@@ -6,10 +6,13 @@
 package se.johan.foodi.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -17,10 +20,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.eclipse.persistence.annotations.UuidGenerator;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -43,6 +49,7 @@ public class Recipe implements Serializable {
     @NotNull
     @Size(min = 1, max = 32)
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
     @Basic(optional = false)
     @NotNull
@@ -64,8 +71,15 @@ public class Recipe implements Serializable {
         @JoinColumn(name = "ingredient", referencedColumnName = "name")})
     @ManyToMany
     private List<Ingredient> ingredientList;
+    
+    @Transient
+    private List<String> pendingCategories;
+    
+    @Transient
+    private List<String> pendingIngredients;
 
     public Recipe() {
+        super();
     }
 
     public Recipe(String id) {
@@ -77,7 +91,15 @@ public class Recipe implements Serializable {
         this.name = name;
         this.imageUri = imageUri;
     }
+    
+    public List<String> getPendingCategories() {
+        return pendingCategories;
+    }
 
+    public List<String> getPendingIngredients() {
+        return pendingIngredients;
+    }
+    
     public String getId() {
         return id;
     }
@@ -92,6 +114,8 @@ public class Recipe implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        
+        LoggerFactory.getLogger(Recipe.class).info("setName(" + name + ")");
     }
 
     public String getDescription() {
@@ -115,7 +139,7 @@ public class Recipe implements Serializable {
      */
     public String getImageUrl() {
         return String.format(
-                "http://via.placeholder.com/128x128",
+                "/uploaded/%s",
                 imageUri
         );
     }
@@ -123,6 +147,23 @@ public class Recipe implements Serializable {
     @XmlTransient
     public List<Category> getCategoryList() {
         return categoryList;
+    }
+    
+    public String getCategoriesString(){
+        List<Category> categories = getCategoryList();
+        if (categories == null || categories.size() == 0) {
+            return "";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (Category cat : categories) {
+            sb.append(cat.getName());
+        }
+        
+        //  remove trailing delimiter
+        sb.setLength(sb.length() - 1);
+        
+        return sb.toString();
     }
 
     public void setCategoryList(List<Category> categoryList) {
@@ -136,6 +177,51 @@ public class Recipe implements Serializable {
 
     public void setIngredientList(List<Ingredient> ingredientList) {
         this.ingredientList = ingredientList;
+    }
+    
+    public String getIngredientsString(){
+        List<Ingredient> ingredients = getIngredientList();
+        if (ingredients == null || ingredients.size() == 0) {
+            return "";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (Ingredient ingredient : ingredients) {
+            sb.append(ingredient.getName());
+        }
+        
+        //  remove trailing delimiter
+        sb.setLength(sb.length() - 1);
+        
+        return sb.toString();
+    }
+    
+    /**
+     * Splits and trims the ingredient string and assigns values to pending ingredients, obtainable via getPendingIngredients().
+     */
+    public void setIngredientsString(String value){
+        String[] split = value.split(",");
+        pendingIngredients = new ArrayList<>();
+        
+        for (String s : split) {
+            pendingIngredients.add(s.trim());
+        }
+        
+        LoggerFactory.getLogger(Recipe.class).info("There are " + pendingIngredients.size() + " pending ingredients");
+    }
+    
+    /**
+     * Splits and trims the ingredient string and assigns values to pending ingredients, obtainable via getPendingIngredients().
+     */
+    public void setCategoriesString(String value){
+        String[] split = value.split(",");
+        pendingCategories = new ArrayList<>();
+        
+        for (String s : split) {
+            pendingCategories.add(s.trim());
+        }
+        
+        LoggerFactory.getLogger(Recipe.class).info("There are " + pendingCategories.size() + " pending categories");
     }
 
     @Override

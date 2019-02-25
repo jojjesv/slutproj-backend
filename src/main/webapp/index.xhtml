@@ -15,6 +15,21 @@
             .recipe-item .image {
                 width: 100%;
                 height: 160px;
+                background-size: cover;
+                background-position: center;
+            }
+
+            td {
+                vertical-align: top;
+            }
+
+            .ui-panelgrid td,
+            .ui-panelgrid tr{
+                border: none !important;
+            }
+
+            .ui-datagrid-column {
+                width: 50%;
             }
         </style>
     </h:head>
@@ -26,9 +41,13 @@
 
                     <p:dataGrid value="#{recipeBean.recipes}" var="recipe" columns="2" styleClass="recipe-list">
                         <div class="recipe-item">
-                            <div style="background-image:url(#{recipe.imageUrl}})" class="image">
-                            </div>
-                            <h:outputText value="#{recipe.name}" styleClass="name" />
+                            <h:commandLink action="#{recipeBean.setSelectedRecipe(recipe)}">
+                                <div style="background-image:url(#{recipe.imageUrl})" class="image">
+                                </div>
+                                <h:outputText
+                                    value="#{recipe.name == null || recipe.name.length() == 0 ? 'Untitled recipe' : recipe.name}"
+                                    styleClass="name" />
+                            </h:commandLink>
                         </div>
                     </p:dataGrid>
 
@@ -38,7 +57,78 @@
             </div>
 
             <div class="ui-grid-col-6">
-                <p>Hello</p>
+                <c:if test="#{recipeBean.selectedRecipe != null}">
+                    <h2>Basic info</h2>
+
+                    <h:form>
+                        <p:panelGrid columns="1">
+                            <p:row>
+                                <h:panelGrid columns="2">
+                                    <p:row>
+                                        <p:outputLabel for="input-name" value="Name " />
+                                        <p:inputText id="input-name"
+                                                     value="#{recipeBean.selectedRecipe.name}">
+                                            <p:ajax />
+                                        </p:inputText>
+                                    </p:row>
+                                    <p:row>
+                                        <p:outputLabel for="input-description" value="Description: " />
+                                        <p:inputText id="input-description"
+                                                     value="#{recipeBean.selectedRecipe.description}">
+                                            <p:ajax />
+                                        </p:inputText>
+                                    </p:row>
+                                </h:panelGrid>
+                            </p:row>
+                            <p:row>
+                                <h:panelGrid columns="2">
+                                    <p:row>
+                                        <p:outputLabel for="input-ingredients" value="Ingredients: " />
+                                        <p:inputText id="input-ingredients"
+                                                     value="#{recipeBean.selectedRecipe.ingredientsString}"
+                                                     valueChangeListener="#{recipeBean.onSelectedRecipeIngredientsChanged}">
+                                            <p:ajax />
+                                        </p:inputText>
+                                    </p:row>
+                                    <p:row>
+                                        <p:outputLabel for="input-categories" value="Categories: " />
+                                        <p:inputText id="input-categories"
+                                                     value="#{recipeBean.selectedRecipe.categoriesString}"
+                                                     valueChangeListener="#{recipeBean.onSelectedRecipeCategoriesChanged}">
+                                            <p:ajax />
+                                        </p:inputText>
+                                    </p:row>
+                                </h:panelGrid>
+                            </p:row>
+                            <p:row>
+
+                                <h:panelGrid columns="2">
+                                    <p:row>
+                                    </p:row>
+                                    <p:row>
+                                        <h:form>  
+                                            <p:fileUpload fileUploadListener="#{recipeBean.uploadFile}" mode="advanced" dragDropSupport="false"
+                                                          update="messages" sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+
+                                            <p:growl id="messages" showDetail="true" />     
+                                        </h:form>
+                                    </p:row>
+                                </h:panelGrid>
+                            </p:row>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1">
+                            <p:row>
+                                <h2>Steps</h2> <p:commandLink>+</p:commandLink>
+                            </p:row>
+                            <p:row>
+
+                            </p:row>
+                        </p:panelGrid>
+
+                        <p:commandButton value="Update recipe" action="#{recipeBean.updateRecipe}" />
+                    </h:form>
+                </c:if>
             </div>
         </div>
 
