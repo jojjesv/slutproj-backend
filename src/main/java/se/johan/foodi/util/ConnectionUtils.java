@@ -18,6 +18,11 @@ import java.sql.SQLException;
 public class ConnectionUtils {
 
     public static String querySingleString(String sql, String... params) throws SQLException {
+        return querySingleString(sql, QueryExecutionType.EXECUTE_QUERY, params);
+    }
+
+    public static String querySingleString(String sql, QueryExecutionType executionType,
+            String... params) throws SQLException {
         try (Connection connection = ConnectionFactory.getConnection()) {
 
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -25,16 +30,28 @@ public class ConnectionUtils {
             for (int i = 0; i < params.length; i++) {
                 stmt.setString(i + 1, params[i]);
             }
-            
-            ResultSet result = stmt.executeQuery();
-            if (!result.next()) {
-                return null;
+
+            switch (executionType) {
+                case EXECUTE_QUERY:
+                default:
+                    ResultSet result = stmt.executeQuery();
+                    if (!result.next()) {
+                        return null;
+                    }
+                    return result.getString(1);
+                    
+                case EXECUTE_UPDATE:
+                    stmt.executeUpdate();
+                    return null;
             }
-            
-            return result.getString(1);
 
         } catch (SQLException ex) {
             throw ex;
         }
+    }
+
+    public enum QueryExecutionType {
+        EXECUTE_QUERY,
+        EXECUTE_UPDATE
     }
 }

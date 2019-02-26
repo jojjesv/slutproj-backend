@@ -7,8 +7,10 @@ package se.johan.foodi.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +21,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -43,6 +46,9 @@ import org.slf4j.LoggerFactory;
     , @NamedQuery(name = "Recipe.findByImageUri", query = "SELECT r FROM Recipe r WHERE r.imageUri = :imageUri")})
 public class Recipe implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
+    private Collection<Step> stepCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -60,9 +66,8 @@ public class Recipe implements Serializable {
     @Column(name = "description")
     private String description;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 32)
-    @Column(name = "image_uri")
+    @Column(name = "image_uri", nullable = true)
     private String imageUri;
     @ManyToMany(mappedBy = "recipeList")
     private List<Category> categoryList;
@@ -114,8 +119,6 @@ public class Recipe implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-        
-        LoggerFactory.getLogger(Recipe.class).info("setName(" + name + ")");
     }
 
     public String getDescription() {
@@ -247,6 +250,15 @@ public class Recipe implements Serializable {
     @Override
     public String toString() {
         return "se.johan.foodi.model.Recipe[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Step> getStepCollection() {
+        return stepCollection;
+    }
+
+    public void setStepCollection(Collection<Step> stepCollection) {
+        this.stepCollection = stepCollection;
     }
 
 }

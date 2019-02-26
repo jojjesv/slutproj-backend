@@ -60,7 +60,7 @@
                 <c:if test="#{recipeBean.selectedRecipe != null}">
                     <h2>Basic info</h2>
 
-                    <h:form>
+                    <h:form >
                         <p:panelGrid columns="1">
                             <p:row>
                                 <h:panelGrid columns="2">
@@ -119,14 +119,18 @@
 
                         <p:panelGrid columns="1">
                             <p:row>
-                                <h2>Steps</h2> <p:commandLink>+</p:commandLink>
+                                <h2>Steps <p:commandLink action="#{recipeBean.addStep()}">+</p:commandLink></h2>
                             </p:row>
-                            <p:row>
-
-                            </p:row>
+                            <p:dataGrid var="step" value="#{recipeBean.selectedRecipe.stepCollection}">
+                                <p:row>
+                                    <p:inputText value="#{step.text}" />
+                                </p:row>
+                            </p:dataGrid>
                         </p:panelGrid>
+                        
+                        <p:messages />
 
-                        <p:commandButton value="Update recipe" action="#{recipeBean.updateRecipe}" />
+                        <h:commandButton value="Update recipe" action="#{recipeBean.updateRecipe}" />
                     </h:form>
                 </c:if>
             </div>

@@ -1,6 +1,7 @@
 se/johan/foodi/model/Admin.class
 se/johan/foodi/model/Recipe_.class
 se/johan/foodi/admin/RecipeBean.class
+se/johan/foodi/util/ConnectionUtils$QueryExecutionType.class
 se/johan/foodi/model/CommentLike.class
 se/johan/foodi/model/facade/StepFacade.class
 se/johan/foodi/admin/AuthBean$1.class
@@ -12,6 +13,7 @@ se/johan/foodi/model/Ingredient_.class
 se/johan/foodi/model/Step_.class
 se/johan/foodi/model/Comment_.class
 se/johan/foodi/admin/AuthBean.class
+.netbeans_automatic_build
 se/johan/foodi/service/RecipeService.class
 se/johan/foodi/util/ConnectionUtils.class
 se/johan/foodi/admin/InitializerBean.class
@@ -33,4 +35,5 @@ se/johan/foodi/model/facade/CommentFacade.class
 se/johan/foodi/util/RequestUtils.class
 se/johan/foodi/RequestHandler.class
 se/johan/foodi/model/Recipe.class
+se/johan/foodi/util/ConnectionUtils$1.class
 se/johan/foodi/util/FileUtils.class
