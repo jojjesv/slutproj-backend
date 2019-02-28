@@ -8,6 +8,7 @@ package se.johan.foodi.model;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,6 +40,12 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Comment.findByRecipeId", query = "SELECT c FROM Comment c WHERE c.recipeId = :recipeId")})
 public class Comment implements Serializable {
 
+  @JoinColumn(name = "recipe_id", referencedColumnName = "id")
+  @ManyToOne(optional = false)
+  private Recipe recipeId;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "commentId")
+  private Collection<CommentLike> commentLikeCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,11 +62,6 @@ public class Comment implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "author")
     private String author;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 32)
-    @Column(name = "recipe_id")
-    private String recipeId;
     @OneToMany(mappedBy = "replyToId")
     private Collection<Comment> commentCollection;
     @JoinColumn(name = "reply_to_id", referencedColumnName = "id")
@@ -73,11 +75,10 @@ public class Comment implements Serializable {
         this.id = id;
     }
 
-    public Comment(Integer id, String text, String author, String recipeId) {
+    public Comment(Integer id, String text, String author) {
         this.id = id;
         this.text = text;
         this.author = author;
-        this.recipeId = recipeId;
     }
 
     public Integer getId() {
@@ -102,14 +103,6 @@ public class Comment implements Serializable {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public String getRecipeId() {
-        return recipeId;
-    }
-
-    public void setRecipeId(String recipeId) {
-        this.recipeId = recipeId;
     }
 
     @XmlTransient
@@ -153,5 +146,22 @@ public class Comment implements Serializable {
     public String toString() {
         return "se.johan.foodi.model.Comment[ id=" + id + " ]";
     }
+
+  public Recipe getRecipeId() {
+    return recipeId;
+  }
+
+  public void setRecipeId(Recipe recipeId) {
+    this.recipeId = recipeId;
+  }
+
+  @XmlTransient
+  public Collection<CommentLike> getCommentLikeCollection() {
+    return commentLikeCollection;
+  }
+
+  public void setCommentLikeCollection(Collection<CommentLike> commentLikeCollection) {
+    this.commentLikeCollection = commentLikeCollection;
+  }
     
 }
