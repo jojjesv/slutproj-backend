@@ -8,6 +8,7 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Comment.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/admin/InitializerBean.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/service/RecipeService.java
+/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/RecipeIngredientPK.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Admin.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Category.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/util/ConnectionUtils.java
@@ -25,3 +26,4 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/CommentLike.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Step.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/facade/AbstractFacade.java
+/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/RecipeIngredient.java

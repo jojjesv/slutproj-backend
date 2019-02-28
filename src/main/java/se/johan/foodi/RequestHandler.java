@@ -18,6 +18,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import se.johan.foodi.model.Recipe;
@@ -39,7 +40,7 @@ public class RequestHandler {
   RecipeFacade recipeFacade;
 
   @POST
-  @Path("/recipe")
+  @Path("recipes")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response addRecipe(String body) {
@@ -67,24 +68,48 @@ public class RequestHandler {
   }
 
   /**
+   * Outputs all comments for a recipe.
+   *
+   * @return
+   */
+  @GET
+  @Path("recipes/{recipeId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getRecipe(@PathParam("recipeId") String recipeId,
+          @QueryParam("sid") String senderIdentifier) {
+    JSONObject data;
+    data = requestFacade.getRecipe(recipeId, senderIdentifier);
+    if (data.containsKey("error")) {
+      return Response.status(Response.Status.BAD_REQUEST)
+              .entity(data.toJSONString()).build();
+    }
+    return Response.ok(data.toJSONString()).build();
+  }
+
+  /**
    * POSTs a comment.
    *
    * @return
    */
   @POST
-  @Path("/recipes/:recipeId/comment")
+  @Path("recipes/{recipeId}/comment")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response postComment(String body, @PathParam("recipeId") String recipeId) {
 
     try {
-      JSONObject obj = JSON.parseObject(body);
+      JSONObject obj = null;
+      try {
+        obj = JSON.parseObject(body);
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
 
       JSONObject validationResult = RequestUtils.validateJsonHasProps(
               obj, "author", "message"
       );
       if (validationResult != null) {
-        return Response.status(400).entity(validationResult).build();
+        return Response.status(400).entity(validationResult.toJSONString()).build();
       }
 
       requestFacade.postComment(recipeId, obj.getString("author"), obj.getString("message"));
@@ -94,7 +119,7 @@ public class RequestHandler {
 
       JSONObject out = new JSONObject();
       out.put("message", e.getMessage());
-      return Response.status(400).entity(out).build();
+      return Response.status(400).entity(out.toJSONString()).build();
 
     } catch (SQLException e) {
 
@@ -116,7 +141,7 @@ public class RequestHandler {
    * @return
    */
   @POST
-  @Path("/comment/:commentId/like")
+  @Path("comment/:commentId/like")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response postCommentLike(String body, @PathParam("commentId") String commentId) {

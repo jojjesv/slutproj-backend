@@ -10,6 +10,7 @@ se/johan/foodi/model/Category_.class
 se/johan/foodi/model/facade/IngredientFacade.class
 se/johan/foodi/model/facade/CategoryFacade.class
 se/johan/foodi/model/Ingredient_.class
+se/johan/foodi/RecipeIngredient_.class
 se/johan/foodi/model/Step_.class
 se/johan/foodi/model/Comment_.class
 se/johan/foodi/admin/AuthBean.class
@@ -28,11 +29,14 @@ se/johan/foodi/model/facade/CommentLikeFacade.class
 org/netbeans/rest/application/config/ApplicationConfig.class
 se/johan/foodi/model/Comment.class
 se/johan/foodi/admin/AuthBean$AuthData.class
+se/johan/foodi/RecipeIngredient.class
+se/johan/foodi/RecipeIngredientPK.class
 se/johan/foodi/recipe/RecipeData.class
 se/johan/foodi/model/facade/RecipeFacade.class
 se/johan/foodi/model/facade/CommentFacade.class
 se/johan/foodi/util/RequestUtils.class
 se/johan/foodi/RequestHandler.class
+se/johan/foodi/RecipeIngredientPK_.class
 se/johan/foodi/model/Recipe.class
 se/johan/foodi/util/ConnectionUtils$1.class
 se/johan/foodi/util/FileUtils.class
