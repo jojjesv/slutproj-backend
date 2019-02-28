@@ -62,19 +62,20 @@ public class Recipe implements Serializable {
   @Size(min = 1, max = 255)
   @Column(name = "name")
   private String name;
+
   @Size(max = 255)
   @Column(name = "description")
   private String description;
+
   @Basic(optional = false)
   @Size(min = 1, max = 32)
   @Column(name = "image_uri", nullable = true)
   private String imageUri;
+
   @ManyToMany(mappedBy = "recipeList")
   private List<Category> categoryList;
-  @JoinTable(name = "recipe_ingredient", joinColumns = {
-    @JoinColumn(name = "recipe_id", referencedColumnName = "id")}, inverseJoinColumns = {
-    @JoinColumn(name = "ingredient", referencedColumnName = "name")})
-  @ManyToMany
+
+  @ManyToMany(mappedBy = "recipeList")
   private List<Ingredient> ingredientList;
 
   @Transient
@@ -154,6 +155,13 @@ public class Recipe implements Serializable {
 
   public String getCategoriesString() {
     List<Category> categories = getCategoryList();
+
+    LoggerFactory.getLogger(Recipe.class).info("there are " + String.valueOf(categories.size()) + " categories");
+
+    for (Category cat : categories) {
+      LoggerFactory.getLogger(Recipe.class).info("cat_ " + cat.getName());
+    }
+
     if (categories == null || categories.size() == 0) {
       return "";
     }
@@ -185,14 +193,13 @@ public class Recipe implements Serializable {
 
   public String getIngredientsString() {
     List<Ingredient> ingredients = getIngredientList();
-    
+
     /*
     LoggerFactory.getLogger(Recipe.class).info("Has ingredients: " + String.valueOf(ingredients.size()));
     for (Ingredient ingr : ingredients) {
       LoggerFactory.getLogger(Recipe.class).info("using ingredient: " + ingr.getName());
     }
-    */
-
+     */
     if (ingredients == null || ingredients.size() == 0) {
       return "";
     }

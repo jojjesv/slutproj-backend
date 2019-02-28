@@ -11,6 +11,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -39,7 +41,10 @@ public class Ingredient implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "name")
     private String name;
-    @ManyToMany(mappedBy = "ingredientList")
+    @JoinTable(name = "recipe_ingredient", joinColumns = {
+        @JoinColumn(name = "ingredient", referencedColumnName = "name")}, inverseJoinColumns = {
+        @JoinColumn(name = "recipe_id", referencedColumnName = "id")})
+    @ManyToMany()
     private List<Recipe> recipeList;
 
     public Ingredient() {

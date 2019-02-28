@@ -18,14 +18,19 @@ import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ValueChangeEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.johan.foodi.model.Category;
+import se.johan.foodi.model.Ingredient;
 import se.johan.foodi.model.Recipe;
 import se.johan.foodi.model.Step;
+import se.johan.foodi.model.facade.CategoryFacade;
+import se.johan.foodi.model.facade.IngredientFacade;
 import se.johan.foodi.model.facade.RecipeFacade;
 import se.johan.foodi.util.ConnectionFactory;
 import se.johan.foodi.util.ConnectionUtils;
@@ -47,6 +52,12 @@ public class RecipeBean {
 
   @EJB
   private RecipeFacade recipeFacade;
+  
+  @EJB
+  private IngredientFacade ingredientFacade;
+  
+  @EJB
+  private CategoryFacade categoryFacade;
 
   private Recipe selectedRecipe;
 
@@ -142,14 +153,42 @@ public class RecipeBean {
       for (Step s : recipe.getStepCollection()) {
         logger.info("Saving step with text: " + s.getText());
       }
+      
+      persistPendingCategories(recipe);
+      persistPendingIngredients(recipe);
 
       recipeFacade.edit(recipe);
+      
+      //  workaround for that the local object does not update
+      selectedRecipe = recipeFacade.find(recipe.getId());
 
     } catch (SQLException sqlE) {
       logger.error("updateRecipe()", sqlE);
     }
 
     return "index";
+  }
+  
+  private void persistPendingCategories(Recipe target) {
+    List<Category> categoryList = new ArrayList<Category>();
+    
+    for (String cat : target.getPendingCategories()) {
+      Category jpgCat = categoryFacade.find(cat);
+      categoryList.add(jpgCat);
+    }
+    
+    target.setCategoryList(categoryList);
+  }
+  
+  private void persistPendingIngredients(Recipe target) {
+    List<Ingredient> ingredientList = new ArrayList<Ingredient>();
+    
+    for (String ingr : target.getPendingIngredients()) {
+      Ingredient jpaIngr = ingredientFacade.find(ingr);
+      ingredientList.add(jpaIngr);
+    }
+    
+    target.setIngredientList(ingredientList);
   }
 
   /**

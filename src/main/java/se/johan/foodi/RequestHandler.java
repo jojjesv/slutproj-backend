@@ -6,6 +6,7 @@
 package se.johan.foodi;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import java.sql.SQLException;
 import java.util.List;
@@ -31,125 +32,125 @@ import se.johan.foodi.util.RequestUtils;
 @Path("")
 public class RequestHandler {
 
-    @EJB
-    RequestFacade requestFacade;
-    
-    @EJB
-    RecipeFacade recipeFacade;
+  @EJB
+  RequestFacade requestFacade;
 
-    @POST
-    @Path("/recipe")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response addRecipe(String body) {
-        try {
-            JSONObject obj = JSON.parseObject(body);
+  @EJB
+  RecipeFacade recipeFacade;
 
-            return Response.status(201).entity(body).build();
-        } catch (Exception e) {
-            return Response.serverError().build();
-        }
+  @POST
+  @Path("/recipe")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response addRecipe(String body) {
+    try {
+      JSONObject obj = JSON.parseObject(body);
+
+      return Response.status(201).entity(body).build();
+    } catch (Exception e) {
+      return Response.serverError().build();
+    }
+  }
+
+  /**
+   * Outputs all comments for a recipe.
+   *
+   * @return
+   */
+  @GET
+  @Path("recipes")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getRecipes() {
+    JSONArray items = requestFacade.getRecipes(recipeFacade);
+    System.out.println("JSON string: " + items.toJSONString());
+    return Response.ok(items.toString()).build();
+  }
+
+  /**
+   * POSTs a comment.
+   *
+   * @return
+   */
+  @POST
+  @Path("/recipes/:recipeId/comment")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response postComment(String body, @PathParam("recipeId") String recipeId) {
+
+    try {
+      JSONObject obj = JSON.parseObject(body);
+
+      JSONObject validationResult = RequestUtils.validateJsonHasProps(
+              obj, "author", "message"
+      );
+      if (validationResult != null) {
+        return Response.status(400).entity(validationResult).build();
+      }
+
+      requestFacade.postComment(recipeId, obj.getString("author"), obj.getString("message"));
+
+      return Response.status(201).entity(body).build();
+    } catch (IllegalArgumentException e) {
+
+      JSONObject out = new JSONObject();
+      out.put("message", e.getMessage());
+      return Response.status(400).entity(out).build();
+
+    } catch (SQLException e) {
+
+      e.printStackTrace();
+      return Response.serverError().build();
+
+    } catch (Exception e) {
+
+      e.printStackTrace();
+      return Response.serverError().build();
+
     }
 
-    /**
-     * Outputs all comments for a recipe.
-     *
-     * @return
-     */
-    @GET
-    @Path("recipes")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRecipeComments() {
-        List<Recipe> recipes = recipeFacade.findAll();
-        String recipesJson = JSON.toJSONString(recipes);
-        return Response.ok(recipesJson).build();
-    }
+  }
 
-    /**
-     * POSTs a comment.
-     *
-     * @return
-     */
-    @POST
-    @Path("/recipes/:recipeId/comment")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postComment(String body, @PathParam("recipeId") String recipeId) {
+  /**
+   * POSTs a comment like.
+   *
+   * @return
+   */
+  @POST
+  @Path("/comment/:commentId/like")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response postCommentLike(String body, @PathParam("commentId") String commentId) {
 
-        try {
-            JSONObject obj = JSON.parseObject(body);
+    try {
+      JSONObject obj = JSON.parseObject(body);
 
-            JSONObject validationResult = RequestUtils.validateJsonHasProps(
-                    obj, "author", "message"
-            );
-            if (validationResult != null) {
-                return Response.status(400).entity(validationResult).build();
-            }
+      JSONObject validationResult = RequestUtils.validateJsonHasProps(
+              obj, "senderIdentifier"
+      );
+      if (validationResult != null) {
+        return Response.status(400).entity(validationResult).build();
+      }
 
-            requestFacade.postComment(recipeId, obj.getString("author"), obj.getString("message"));
+      requestFacade.likeComment(commentId, obj.getString("senderIdentifier"));
 
-            return Response.status(201).entity(body).build();
-        } catch (IllegalArgumentException e) {
+      return Response.status(201).build();
+    } catch (IllegalArgumentException e) {
 
-            JSONObject out = new JSONObject();
-            out.put("message", e.getMessage());
-            return Response.status(400).entity(out).build();
+      JSONObject out = new JSONObject();
+      out.put("message", e.getMessage());
+      return Response.status(400).entity(out).build();
 
-        } catch (SQLException e) {
+    } catch (SQLException e) {
 
-            e.printStackTrace();
-            return Response.serverError().build();
+      e.printStackTrace();
+      return Response.serverError().build();
 
-        } catch (Exception e) {
+    } catch (Exception e) {
 
-            e.printStackTrace();
-            return Response.serverError().build();
-
-        }
+      e.printStackTrace();
+      return Response.serverError().build();
 
     }
 
-    /**
-     * POSTs a comment like.
-     *
-     * @return
-     */
-    @POST
-    @Path("/comment/:commentId/like")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postCommentLike(String body, @PathParam("commentId") String commentId) {
-
-        try {
-            JSONObject obj = JSON.parseObject(body);
-
-            JSONObject validationResult = RequestUtils.validateJsonHasProps(
-                    obj, "senderIdentifier"
-            );
-            if (validationResult != null) {
-                return Response.status(400).entity(validationResult).build();
-            }
-
-            requestFacade.likeComment(commentId, obj.getString("senderIdentifier"));
-
-            return Response.status(201).build();
-        } catch (IllegalArgumentException e) {
-
-            JSONObject out = new JSONObject();
-            out.put("message", e.getMessage());
-            return Response.status(400).entity(out).build();
-
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-            return Response.serverError().build();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return Response.serverError().build();
-
-        }
-
-    }
+  }
 }
