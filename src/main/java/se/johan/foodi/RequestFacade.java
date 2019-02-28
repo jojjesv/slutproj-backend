@@ -104,36 +104,59 @@ public class RequestFacade {
 
     new CommentLikeFacade().create(like);
   }
-  
+
   /**
-   * Retrieves all recipes objects and formats a JSON.
+   * Retrieves all recipes objects in a minimal preview format, and formats a
+   * JSON.
    */
-  public JSONArray getRecipes(RecipeFacade facade) {
+  public JSONArray getRecipePreviews(RecipeFacade facade) {
     List<Recipe> recipes = facade.findAll();
     JSONArray output = new JSONArray();
-    
+
     for (Recipe r : recipes) {
       JSONObject entry = new JSONObject();
       entry.put("id", r.getId());
       entry.put("imageUrl", r.getImageUrl());
       entry.put("name", r.getName());
-      
-      JSONArray categories = new JSONArray();
-      for (Category cat : r.getCategoryList()) {
-        categories.add(cat.getName());
-      }
-      entry.put("categories", categories);
-      
-      
-      JSONArray ingredients = new JSONArray();
-      for (Ingredient cat : r.getIngredientList()) {
-        ingredients.add(cat.getName());
-      }
-      entry.put("ingredients", ingredients);
-      
+
       output.add(entry);
     }
-    
+
+    return output;
+  }
+
+  /**
+   * Retrieves full info about a recipe and formats a JSON.
+   */
+  public JSONObject getRecipe(String id, RecipeFacade facade) {
+    Recipe recipe = facade.find(id);
+    JSONObject output = new JSONObject();
+
+    if (recipe == null) {
+      output.put("error", "unknownRecipe");
+      output.put("message", "Unknown recipe with id: " + id);
+      return output;
+    }
+
+    output.put("id", recipe.getId());
+    output.put("imageUrl", recipe.getImageUrl());
+    output.put("name", recipe.getName());
+
+    JSONArray categories = new JSONArray();
+    for (Category cat : recipe.getCategoryList()) {
+      categories.add(cat.getName());
+    }
+    output.put("categories", categories);
+
+    JSONArray ingredients = new JSONArray();
+    for (RecipeIngredient ingr : recipe.getRecipeIngredientCollection()) {
+      JSONObject obj = new JSONObject();
+      obj.put("quantity", ingr.getQuantity());
+      obj.put("ingredient", ingr.getIngredient1().getName());
+      ingredients.add(obj);
+    }
+    output.put("ingredients", ingredients);
+
     return output;
   }
 

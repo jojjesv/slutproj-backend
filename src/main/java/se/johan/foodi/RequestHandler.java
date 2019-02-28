@@ -61,7 +61,7 @@ public class RequestHandler {
   @Path("recipes")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getRecipes() {
-    JSONArray items = requestFacade.getRecipes(recipeFacade);
+    JSONArray items = requestFacade.getRecipePreviews(recipeFacade);
     System.out.println("JSON string: " + items.toJSONString());
     return Response.ok(items.toString()).build();
   }

@@ -6,8 +6,10 @@
 package se.johan.foodi.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,11 +18,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import se.johan.foodi.RecipeIngredient;
 
 /**
  *
@@ -33,6 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ingredient.findAll", query = "SELECT i FROM Ingredient i")
     , @NamedQuery(name = "Ingredient.findByName", query = "SELECT i FROM Ingredient i WHERE i.name = :name")})
 public class Ingredient implements Serializable {
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "ingredient1")
+  private Collection<RecipeIngredient> recipeIngredientCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -95,5 +102,14 @@ public class Ingredient implements Serializable {
     public String toString() {
         return "se.johan.foodi.model.Ingredient[ name=" + name + " ]";
     }
+
+  @XmlTransient
+  public Collection<RecipeIngredient> getRecipeIngredientCollection() {
+    return recipeIngredientCollection;
+  }
+
+  public void setRecipeIngredientCollection(Collection<RecipeIngredient> recipeIngredientCollection) {
+    this.recipeIngredientCollection = recipeIngredientCollection;
+  }
     
 }

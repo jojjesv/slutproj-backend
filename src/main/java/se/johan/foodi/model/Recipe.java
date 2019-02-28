@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.persistence.annotations.UuidGenerator;
 import org.slf4j.LoggerFactory;
+import se.johan.foodi.RecipeIngredient;
 
 /**
  *
@@ -45,6 +46,12 @@ import org.slf4j.LoggerFactory;
   , @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")
   , @NamedQuery(name = "Recipe.findByImageUri", query = "SELECT r FROM Recipe r WHERE r.imageUri = :imageUri")})
 public class Recipe implements Serializable {
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+  private Collection<RecipeIngredient> recipeIngredientCollection;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
+  private Collection<Comment> commentCollection;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
   private Collection<Step> stepCollection;
@@ -278,6 +285,24 @@ public class Recipe implements Serializable {
 
   public void setStepCollection(Collection<Step> stepCollection) {
     this.stepCollection = stepCollection;
+  }
+
+  @XmlTransient
+  public Collection<Comment> getCommentCollection() {
+    return commentCollection;
+  }
+
+  public void setCommentCollection(Collection<Comment> commentCollection) {
+    this.commentCollection = commentCollection;
+  }
+
+  @XmlTransient
+  public Collection<RecipeIngredient> getRecipeIngredientCollection() {
+    return recipeIngredientCollection;
+  }
+
+  public void setRecipeIngredientCollection(Collection<RecipeIngredient> recipeIngredientCollection) {
+    this.recipeIngredientCollection = recipeIngredientCollection;
   }
 
 }
