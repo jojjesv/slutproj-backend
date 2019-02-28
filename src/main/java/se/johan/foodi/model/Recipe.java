@@ -39,226 +39,238 @@ import org.slf4j.LoggerFactory;
 @Table(name = "recipe")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Recipe.findAll", query = "SELECT r FROM Recipe r")
-    , @NamedQuery(name = "Recipe.findById", query = "SELECT r FROM Recipe r WHERE r.id = :id")
-    , @NamedQuery(name = "Recipe.findByName", query = "SELECT r FROM Recipe r WHERE r.name = :name")
-    , @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")
-    , @NamedQuery(name = "Recipe.findByImageUri", query = "SELECT r FROM Recipe r WHERE r.imageUri = :imageUri")})
+  @NamedQuery(name = "Recipe.findAll", query = "SELECT r FROM Recipe r")
+  , @NamedQuery(name = "Recipe.findById", query = "SELECT r FROM Recipe r WHERE r.id = :id")
+  , @NamedQuery(name = "Recipe.findByName", query = "SELECT r FROM Recipe r WHERE r.name = :name")
+  , @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")
+  , @NamedQuery(name = "Recipe.findByImageUri", query = "SELECT r FROM Recipe r WHERE r.imageUri = :imageUri")})
 public class Recipe implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
-    private Collection<Step> stepCollection;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
+  private Collection<Step> stepCollection;
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 32)
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "name")
-    private String name;
-    @Size(max = 255)
-    @Column(name = "description")
-    private String description;
-    @Basic(optional = false)
-    @Size(min = 1, max = 32)
-    @Column(name = "image_uri", nullable = true)
-    private String imageUri;
-    @ManyToMany(mappedBy = "recipeList")
-    private List<Category> categoryList;
-    @JoinTable(name = "recipe_ingredient", joinColumns = {
-        @JoinColumn(name = "recipe_id", referencedColumnName = "id")}, inverseJoinColumns = {
-        @JoinColumn(name = "ingredient", referencedColumnName = "name")})
-    @ManyToMany
-    private List<Ingredient> ingredientList;
+  private static final long serialVersionUID = 1L;
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 32)
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private String id;
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "name")
+  private String name;
+  @Size(max = 255)
+  @Column(name = "description")
+  private String description;
+  @Basic(optional = false)
+  @Size(min = 1, max = 32)
+  @Column(name = "image_uri", nullable = true)
+  private String imageUri;
+  @ManyToMany(mappedBy = "recipeList")
+  private List<Category> categoryList;
+  @JoinTable(name = "recipe_ingredient", joinColumns = {
+    @JoinColumn(name = "recipe_id", referencedColumnName = "id")}, inverseJoinColumns = {
+    @JoinColumn(name = "ingredient", referencedColumnName = "name")})
+  @ManyToMany
+  private List<Ingredient> ingredientList;
+
+  @Transient
+  private List<String> pendingCategories;
+
+  @Transient
+  private List<String> pendingIngredients;
+
+  public Recipe() {
+    super();
+  }
+
+  public Recipe(String id) {
+    this.id = id;
+  }
+
+  public Recipe(String id, String name, String imageUri) {
+    this.id = id;
+    this.name = name;
+    this.imageUri = imageUri;
+  }
+
+  public List<String> getPendingCategories() {
+    return pendingCategories;
+  }
+
+  public List<String> getPendingIngredients() {
+    return pendingIngredients;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getImageUri() {
+    return imageUri;
+  }
+
+  public void setImageUri(String imageUri) {
+    this.imageUri = imageUri;
+  }
+
+  /**
+   * @return
+   */
+  public String getImageUrl() {
+    return String.format(
+            "/uploaded/%s",
+            imageUri
+    );
+  }
+
+  @XmlTransient
+  public List<Category> getCategoryList() {
+    return categoryList;
+  }
+
+  public String getCategoriesString() {
+    List<Category> categories = getCategoryList();
+    if (categories == null || categories.size() == 0) {
+      return "";
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (Category cat : categories) {
+      sb.append(cat.getName());
+      sb.append(",");
+    }
+
+    //  remove trailing delimiter
+    sb.setLength(sb.length() - 1);
+
+    return sb.toString();
+  }
+
+  public void setCategoryList(List<Category> categoryList) {
+    this.categoryList = categoryList;
+  }
+
+  @XmlTransient
+  public List<Ingredient> getIngredientList() {
+    return ingredientList;
+  }
+
+  public void setIngredientList(List<Ingredient> ingredientList) {
+    this.ingredientList = ingredientList;
+  }
+
+  public String getIngredientsString() {
+    List<Ingredient> ingredients = getIngredientList();
     
-    @Transient
-    private List<String> pendingCategories;
-    
-    @Transient
-    private List<String> pendingIngredients;
-
-    public Recipe() {
-        super();
+    /*
+    LoggerFactory.getLogger(Recipe.class).info("Has ingredients: " + String.valueOf(ingredients.size()));
+    for (Ingredient ingr : ingredients) {
+      LoggerFactory.getLogger(Recipe.class).info("using ingredient: " + ingr.getName());
     }
+    */
 
-    public Recipe(String id) {
-        this.id = id;
+    if (ingredients == null || ingredients.size() == 0) {
+      return "";
     }
 
-    public Recipe(String id, String name, String imageUri) {
-        this.id = id;
-        this.name = name;
-        this.imageUri = imageUri;
-    }
-    
-    public List<String> getPendingCategories() {
-        return pendingCategories;
+    StringBuilder sb = new StringBuilder();
+    for (Ingredient ingredient : ingredients) {
+      sb.append(ingredient.getName());
+      sb.append(",");
     }
 
-    public List<String> getPendingIngredients() {
-        return pendingIngredients;
-    }
-    
-    public String getId() {
-        return id;
+    //  remove trailing delimiter
+    sb.setLength(sb.length() - 1);
+
+    return sb.toString();
+  }
+
+  /**
+   * Splits and trims the ingredient string and assigns values to pending
+   * ingredients, obtainable via getPendingIngredients().
+   */
+  public void setIngredientsString(String value) {
+    String[] split = value.split(",");
+    pendingIngredients = new ArrayList<>();
+
+    for (String s : split) {
+      pendingIngredients.add(s.trim());
     }
 
-    public void setId(String id) {
-        this.id = id;
+    LoggerFactory.getLogger(Recipe.class).info("There are " + pendingIngredients.size() + " pending ingredients");
+  }
+
+  /**
+   * Splits and trims the ingredient string and assigns values to pending
+   * ingredients, obtainable via getPendingIngredients().
+   */
+  public void setCategoriesString(String value) {
+    String[] split = value.split(",");
+    pendingCategories = new ArrayList<>();
+
+    for (String s : split) {
+      pendingCategories.add(s.trim());
     }
 
-    public String getName() {
-        return name;
-    }
+    LoggerFactory.getLogger(Recipe.class).info("There are " + pendingCategories.size() + " pending categories");
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (id != null ? id.hashCode() : 0);
+    return hash;
+  }
 
-    public String getDescription() {
-        return description;
+  @Override
+  public boolean equals(Object object) {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof Recipe)) {
+      return false;
     }
+    Recipe other = (Recipe) object;
+    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+      return false;
+    }
+    return true;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  @Override
+  public String toString() {
+    return "se.johan.foodi.model.Recipe[ id=" + id + " ]";
+  }
 
-    public String getImageUri() {
-        return imageUri;
-    }
+  @XmlTransient
+  public Collection<Step> getStepCollection() {
+    return stepCollection;
+  }
 
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
-    }
-
-    /**
-     * @return
-     */
-    public String getImageUrl() {
-        return String.format(
-                "/uploaded/%s",
-                imageUri
-        );
-    }
-
-    @XmlTransient
-    public List<Category> getCategoryList() {
-        return categoryList;
-    }
-    
-    public String getCategoriesString(){
-        List<Category> categories = getCategoryList();
-        if (categories == null || categories.size() == 0) {
-            return "";
-        }
-        
-        StringBuilder sb = new StringBuilder();
-        for (Category cat : categories) {
-            sb.append(cat.getName());
-        }
-        
-        //  remove trailing delimiter
-        sb.setLength(sb.length() - 1);
-        
-        return sb.toString();
-    }
-
-    public void setCategoryList(List<Category> categoryList) {
-        this.categoryList = categoryList;
-    }
-
-    @XmlTransient
-    public List<Ingredient> getIngredientList() {
-        return ingredientList;
-    }
-
-    public void setIngredientList(List<Ingredient> ingredientList) {
-        this.ingredientList = ingredientList;
-    }
-    
-    public String getIngredientsString(){
-        List<Ingredient> ingredients = getIngredientList();
-        if (ingredients == null || ingredients.size() == 0) {
-            return "";
-        }
-        
-        StringBuilder sb = new StringBuilder();
-        for (Ingredient ingredient : ingredients) {
-            sb.append(ingredient.getName());
-        }
-        
-        //  remove trailing delimiter
-        sb.setLength(sb.length() - 1);
-        
-        return sb.toString();
-    }
-    
-    /**
-     * Splits and trims the ingredient string and assigns values to pending ingredients, obtainable via getPendingIngredients().
-     */
-    public void setIngredientsString(String value){
-        String[] split = value.split(",");
-        pendingIngredients = new ArrayList<>();
-        
-        for (String s : split) {
-            pendingIngredients.add(s.trim());
-        }
-        
-        LoggerFactory.getLogger(Recipe.class).info("There are " + pendingIngredients.size() + " pending ingredients");
-    }
-    
-    /**
-     * Splits and trims the ingredient string and assigns values to pending ingredients, obtainable via getPendingIngredients().
-     */
-    public void setCategoriesString(String value){
-        String[] split = value.split(",");
-        pendingCategories = new ArrayList<>();
-        
-        for (String s : split) {
-            pendingCategories.add(s.trim());
-        }
-        
-        LoggerFactory.getLogger(Recipe.class).info("There are " + pendingCategories.size() + " pending categories");
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Recipe)) {
-            return false;
-        }
-        Recipe other = (Recipe) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "se.johan.foodi.model.Recipe[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Step> getStepCollection() {
-        return stepCollection;
-    }
-
-    public void setStepCollection(Collection<Step> stepCollection) {
-        this.stepCollection = stepCollection;
-    }
+  public void setStepCollection(Collection<Step> stepCollection) {
+    this.stepCollection = stepCollection;
+  }
 
 }

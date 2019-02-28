@@ -13,7 +13,6 @@ se/johan/foodi/model/Ingredient_.class
 se/johan/foodi/model/Step_.class
 se/johan/foodi/model/Comment_.class
 se/johan/foodi/admin/AuthBean.class
-.netbeans_automatic_build
 se/johan/foodi/service/RecipeService.class
 se/johan/foodi/util/ConnectionUtils.class
 se/johan/foodi/admin/InitializerBean.class
