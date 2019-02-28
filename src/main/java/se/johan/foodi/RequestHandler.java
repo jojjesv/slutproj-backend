@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.sql.SQLException;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -92,7 +93,7 @@ public class RequestHandler {
    * @return
    */
   @POST
-  @Path("recipes/{recipeId}/comment")
+  @Path("recipes/{recipeId}/comments")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response postComment(String body, @PathParam("recipeId") String recipeId) {
@@ -112,7 +113,8 @@ public class RequestHandler {
         return Response.status(400).entity(validationResult.toJSONString()).build();
       }
 
-      requestFacade.postComment(recipeId, obj.getString("author"), obj.getString("message"));
+      requestFacade.postComment(recipeId, obj.getString("author"),
+              obj.getString("message"), obj.getInteger("replyTo"));
 
       return Response.status(201).entity(body).build();
     } catch (IllegalArgumentException e) {
@@ -141,19 +143,25 @@ public class RequestHandler {
    * @return
    */
   @POST
-  @Path("comment/:commentId/like")
+  @Path("comments/{commentId}/like")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response postCommentLike(String body, @PathParam("commentId") String commentId) {
+  public Response postCommentLike(String body,
+          @PathParam("commentId") Integer commentId) {
 
     try {
-      JSONObject obj = JSON.parseObject(body);
+
+      JSONObject obj = null;
+      try {
+        obj = JSON.parseObject(body);
+      } catch (Exception e) {
+      }
 
       JSONObject validationResult = RequestUtils.validateJsonHasProps(
               obj, "senderIdentifier"
       );
       if (validationResult != null) {
-        return Response.status(400).entity(validationResult).build();
+        return Response.status(400).entity(validationResult.toJSONString()).build();
       }
 
       requestFacade.likeComment(commentId, obj.getString("senderIdentifier"));
@@ -163,7 +171,13 @@ public class RequestHandler {
 
       JSONObject out = new JSONObject();
       out.put("message", e.getMessage());
-      return Response.status(400).entity(out).build();
+      return Response.status(400).entity(out.toJSONString()).build();
+
+    } catch (EJBException e) {
+
+      JSONObject out = new JSONObject();
+      out.put("message", e.getMessage());
+      return Response.status(400).entity(out.toJSONString()).build();
 
     } catch (SQLException e) {
 

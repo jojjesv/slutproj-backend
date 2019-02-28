@@ -24,18 +24,22 @@ import se.johan.foodi.model.facade.RecipeFacade;
 import se.johan.foodi.util.ConnectionUtils;
 
 /**
- * Facade for interacting with the database facades as well as formatting
- * JSON results.
+ * Facade for interacting with the database facades as well as formatting JSON
+ * results.
+ *
  * @author johan
  */
 @Stateless
 public class RequestFacade {
-  
+
   @EJB
   private RecipeFacade recipeFacade;
-  
+
   @EJB
   private CommentFacade commentFacade;
+
+  @EJB
+  private CommentLikeFacade commentLikeFacade;
 
   /**
    * @return all comments for a specific recipe.
@@ -51,6 +55,12 @@ public class RequestFacade {
   }
 
   public void postComment(String recipeId, String author, String message)
+          throws SQLException, IllegalArgumentException {
+    postComment(recipeId, author, message, null);
+  }
+
+  public void postComment(String recipeId, String author, String message,
+          Integer replyToId)
           throws SQLException, IllegalArgumentException {
     if (message.length() < 1) {
       throw new IllegalArgumentException("Must provide a message");
@@ -76,6 +86,15 @@ public class RequestFacade {
     comment.setText(message);
     comment.setRecipeId(recipe);
 
+    if (replyToId != null) {
+      Comment replyToComment = commentFacade.find(replyToId);
+      if (replyToComment == null) {
+        //  Invalid reply to id
+        throw new IllegalArgumentException("Invalid reply-to ID: " + replyToId);
+      }
+      comment.setReplyToId(replyToComment);
+    }
+
     commentFacade.create(comment);
   }
 
@@ -85,13 +104,13 @@ public class RequestFacade {
    * @param commentId
    * @param senderIdentifier
    */
-  public void likeComment(String commentId, String senderIdentifier) throws SQLException, IllegalArgumentException {
+  public void likeComment(Integer commentId, String senderIdentifier) throws SQLException, IllegalArgumentException {
 
     if (senderIdentifier == null) {
       throw new IllegalArgumentException("Invalid sender identifier: " + senderIdentifier);
     }
 
-    Comment comment = new CommentFacade().find(commentId);
+    Comment comment = commentFacade.find(commentId);
 
     if (comment == null) {
       throw new IllegalArgumentException("Invalid comment ID: " + commentId);
@@ -107,9 +126,10 @@ public class RequestFacade {
     }
 
     CommentLike like = new CommentLike();
+    like.setSenderIdentifier(senderIdentifier);
     like.setCommentId(comment);
 
-    new CommentLikeFacade().create(like);
+    commentLikeFacade.create(like);
   }
 
   /**
@@ -134,12 +154,14 @@ public class RequestFacade {
 
   /**
    * Retrieves full info about a recipe and formats a JSON.
-   * @param senderIdentifier Used to determine whether the current user has liked specific comments.
+   *
+   * @param senderIdentifier Used to determine whether the current user has
+   * liked specific comments.
    */
   public JSONObject getRecipe(String id, String senderIdentifier) {
     Recipe recipe = recipeFacade.find(id);
     JSONObject output = new JSONObject();
-    
+
     if (senderIdentifier == null) {
       output.put("error", "badSenderIdentifier");
       output.put("message", "Bad sender identifier: " + senderIdentifier);
@@ -183,21 +205,12 @@ public class RequestFacade {
 
     JSONArray comments = new JSONArray();
     for (Comment comment : recipe.getCommentCollection()) {
-      JSONObject obj = new JSONObject();
-      obj.put("id", comment.getId());
-      obj.put("author", comment.getAuthor());
-      obj.put("message", comment.getText());
-      obj.put("likeCount", comment.getCommentLikeCollection().size());
-      
-      boolean currentUserLiked = false;
-      for (CommentLike like : comment.getCommentLikeCollection()) {
-        if (like.getSenderIdentifier().equals(senderIdentifier)) {
-          currentUserLiked = true;
-          break;
-        }
+      if (comment.getReplyToId() != null) {
+        //  prevent replies amongst root nodes
+        continue;
       }
-      obj.put("currentUserLiked", currentUserLiked);
-      steps.add(obj);
+
+      comments.add(comment.toJSONObject(senderIdentifier));
     }
     output.put("comments", comments);
 
