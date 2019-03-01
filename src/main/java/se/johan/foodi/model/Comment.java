@@ -42,6 +42,11 @@ import javax.xml.bind.annotation.XmlTransient;
   , @NamedQuery(name = "Comment.findByRecipeId", query = "SELECT c FROM Comment c WHERE c.recipeId = :recipeId")})
 public class Comment implements Serializable {
 
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "reported")
+  private boolean reported;
+
   @JoinColumn(name = "recipe_id", referencedColumnName = "id")
   @ManyToOne(optional = false)
   private Recipe recipeId;
@@ -176,6 +181,7 @@ public class Comment implements Serializable {
     obj.put("author", getAuthor());
     obj.put("message", getText());
     obj.put("likeCount", getCommentLikeCollection().size());
+    obj.put("reported", getReported());
 
     JSONArray replies = new JSONArray();
     for (Comment reply : getCommentCollection()) {
@@ -193,5 +199,13 @@ public class Comment implements Serializable {
     obj.put("currentUserLiked", currentUserLiked);
 
     return obj;
+  }
+
+  public boolean getReported() {
+    return reported;
+  }
+
+  public void setReported(boolean reported) {
+    this.reported = reported;
   }
 }

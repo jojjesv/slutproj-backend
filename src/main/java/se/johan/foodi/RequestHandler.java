@@ -146,7 +146,7 @@ public class RequestHandler {
   @Path("comments/{commentId}/like")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response postCommentLike(String body,
+  public Response likeComment(String body,
           @PathParam("commentId") Integer commentId) {
 
     try {
@@ -183,6 +183,44 @@ public class RequestHandler {
 
       e.printStackTrace();
       return Response.serverError().build();
+
+    } catch (Exception e) {
+
+      e.printStackTrace();
+      return Response.serverError().build();
+
+    }
+
+  }
+  
+
+  /**
+   * Reports a specific comment.
+   *
+   * @return
+   */
+  @POST
+  @Path("comments/{commentId}/report")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response reportComment(@PathParam("commentId") Integer commentId) {
+
+    try {
+
+      requestFacade.reportComment(commentId);
+
+      return Response.status(201).build();
+    } catch (IllegalArgumentException e) {
+
+      JSONObject out = new JSONObject();
+      out.put("message", e.getMessage());
+      return Response.status(400).entity(out.toJSONString()).build();
+
+    } catch (EJBException e) {
+
+      JSONObject out = new JSONObject();
+      out.put("message", e.getMessage());
+      return Response.status(400).entity(out.toJSONString()).build();
 
     } catch (Exception e) {
 

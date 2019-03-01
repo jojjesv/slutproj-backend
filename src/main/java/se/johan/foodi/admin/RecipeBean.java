@@ -26,10 +26,12 @@ import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.johan.foodi.model.Category;
+import se.johan.foodi.model.Comment;
 import se.johan.foodi.model.Ingredient;
 import se.johan.foodi.model.Recipe;
 import se.johan.foodi.model.Step;
 import se.johan.foodi.model.facade.CategoryFacade;
+import se.johan.foodi.model.facade.CommentFacade;
 import se.johan.foodi.model.facade.IngredientFacade;
 import se.johan.foodi.model.facade.RecipeFacade;
 import se.johan.foodi.util.ConnectionFactory;
@@ -58,8 +60,15 @@ public class RecipeBean {
   
   @EJB
   private CategoryFacade categoryFacade;
+  
+  @EJB
+  private CommentFacade commentFacade;
 
   private Recipe selectedRecipe;
+  
+  private boolean filterReportedComments;
+  
+  
 
   public Recipe getSelectedRecipe() {
     return selectedRecipe;
@@ -298,5 +307,43 @@ public class RecipeBean {
 
   public void setUploadedFile(UploadedFile uploadedFile) {
     this.uploadedFile = uploadedFile;
+  }
+
+  public boolean isFilterReportedComments() {
+    return filterReportedComments;
+  }
+
+  public void setFilterReportedComments(boolean filterReportedComments) {
+    this.filterReportedComments = filterReportedComments;
+  }
+  
+  /**
+   * Deletes a comment (and persist) from the selected recipe.
+   * @return Whether the comment was actually deleted.
+   */
+  public boolean deleteComment(int commentId) {
+    Collection<Comment> comments = selectedRecipe.getCommentCollection();
+    
+    for (Comment c : comments) {
+      if (c.getId() == commentId) {
+        //  update local state??
+        comments.remove(c);
+        
+        commentFacade.remove(c);
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  /**
+   * To be invoked from command button.
+   * @param commentId
+   * @return 
+   */
+  public String deleteCommentAndRedirect(int commentId) {
+    deleteComment(commentId);
+    return "index";
   }
 }

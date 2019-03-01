@@ -217,4 +217,26 @@ public class RequestFacade {
     return output;
   }
 
+  /**
+   * Reports a specific comment, unless it's been already reported.
+   *
+   * @param commentId
+   * @return Whether the comment was reported
+   */
+  public boolean reportComment(Integer commentId) throws IllegalArgumentException {
+    Comment comment = commentFacade.find(commentId);
+    if (comment == null) {
+      throw new IllegalArgumentException("Unknown comment with ID: " + String.valueOf(commentId));
+    }
+
+    if (!comment.getReported()) {
+      comment.setReported(true);
+      commentFacade.edit(comment);
+      
+      return true;
+    }
+    
+    return false;
+  }
+
 }

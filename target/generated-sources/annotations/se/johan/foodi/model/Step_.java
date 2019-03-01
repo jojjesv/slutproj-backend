@@ -5,7 +5,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import se.johan.foodi.model.Recipe;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2019-02-28T19:34:56")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2019-03-01T10:22:27")
 @StaticMetamodel(Step.class)
 public class Step_ { 
 

@@ -291,6 +291,17 @@ public class Recipe implements Serializable {
   public Collection<Comment> getCommentCollection() {
     return commentCollection;
   }
+  
+  public Collection<Comment> getReportedComments() {
+    Collection<Comment> items = new ArrayList<>();
+    for (Comment c : commentCollection) {
+      if (c.getReported()) {
+        items.add(c);
+      }
+    }
+    
+    return items;
+  }
 
   public void setCommentCollection(Collection<Comment> commentCollection) {
     this.commentCollection = commentCollection;
