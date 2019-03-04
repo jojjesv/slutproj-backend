@@ -7,7 +7,7 @@ import se.johan.foodi.RecipeIngredientPK;
 import se.johan.foodi.model.Ingredient;
 import se.johan.foodi.model.Recipe;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2019-03-01T10:22:27")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2019-03-04T14:26:55")
 @StaticMetamodel(RecipeIngredient.class)
 public class RecipeIngredient_ { 
 

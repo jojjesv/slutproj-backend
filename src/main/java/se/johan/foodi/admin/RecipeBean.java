@@ -326,7 +326,7 @@ public class RecipeBean {
     
     for (Comment c : comments) {
       if (c.getId() == commentId) {
-        //  update local state??
+        //  TODO: update local state??
         comments.remove(c);
         
         commentFacade.remove(c);

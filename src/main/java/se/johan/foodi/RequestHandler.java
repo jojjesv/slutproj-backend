@@ -81,7 +81,7 @@ public class RequestHandler {
     JSONObject data;
     data = requestFacade.getRecipe(recipeId, senderIdentifier);
     if (data.containsKey("error")) {
-      return Response.status(Response.Status.BAD_REQUEST)
+      return Response.status(400)
               .entity(data.toJSONString()).build();
     }
     return Response.ok(data.toJSONString()).build();

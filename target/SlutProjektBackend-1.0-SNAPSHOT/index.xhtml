@@ -181,6 +181,7 @@
 
               <p:dataGrid columns="1" var="comment"
                           id="comment-list"
+                          emptyMessage="No comments yet!"
                           value="#{
                           recipeBean.filterReportedComments ? (
                             recipeBean.selectedRecipe.reportedComments

@@ -39,4 +39,7 @@
     <res-auth>Container</res-auth>
     <res-sharing-scope>Shareable</res-sharing-scope>
   </resource-ref>
+  <listener>
+    <listener-class>se.johan.foodi.scheduler.CommentReportMailServletListener</listener-class>
+  </listener>
 </web-app>
