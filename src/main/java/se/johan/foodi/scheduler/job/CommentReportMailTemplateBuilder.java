@@ -38,7 +38,9 @@ public class CommentReportMailTemplateBuilder {
     );
     str.append(
       String.format(
-        "There are %d comment%s which are reported and requires attention.\n\n"
+        "There are %d comment%s which are reported and requires attention.\n\n",
+        comments.size(),
+        comments.size() > 1 ? "s": ""
       )
     );
     str.append(

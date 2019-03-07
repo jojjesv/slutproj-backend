@@ -8,6 +8,7 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/facade/CommentLikeFacade.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Comment.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/admin/InitializerBean.java
+/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler2/CommentReportMailBean.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/service/RecipeService.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/RecipeIngredientPK.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Admin.java
@@ -31,4 +32,5 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/facade/AbstractFacade.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler/job/CommentReportMailTemplateBuilder.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler/CommentReportMailScheduler.java
+/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/filter/CorsFilter.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/RecipeIngredient.java

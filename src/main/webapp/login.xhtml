@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:p="http://primefaces.org/ui">
+  <head>
+    <title>TODO supply a title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+      #btn-morse-input {
+        appearance: none;
+        width: 120px;
+        height: 120px;
+        background-color: #757575;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        display: inline-block;
+      }
+
+      #btn-morse-input:focus {
+        outline: none;
+      }
+
+      #btn-morse-input:active {
+        opacity: 0.85;
+      }
+
+      #morse-result {
+        font-size: 28px;
+        color: #616161;
+        font-weight: 300;
+      }
+    </style>
+  </head>
+  <body>
+    <h:form>
+
+      <a id="btn-morse-input"></a>
+      <div>
+        <p:outputLabel for="input-username">Username</p:outputLabel>
+        <p:inputText id="input-username" value="#{authBean.authInput.username}" />
+      </div>
+      <h:inputText class="morse-input" id="morse-result"
+                   value="#{authBean.authInput.password}" />
+
+      <p:commandButton value="Login" action="#{authBean.loginAndRedirect()}" />
+    </h:form>
+
+
+    <script>
+      let toneAudioSrc = "https://eliptis.se/tone.wav";
+      let toneAudio = new Audio(toneAudioSrc);
+      let morseMillisAtPress = -1;
+
+      window.onload = () => {
+        setupMorseButton()
+      }
+
+      function setupMorseButton() {
+        var outputEl = document.getElementsByClassName("morse-input")[0]
+        var btn = document.getElementById('btn-morse-input');
+        btn.addEventListener('mousedown', function (e) {
+          e.preventDefault()
+          toneAudio.play();
+          morseMillisAtPress = Date.now()
+        })
+        btn.addEventListener('mouseup', function (e) {
+          e.preventDefault()
+          toneAudio.pause()
+          toneAudio.currentTime = 0
+
+          let deltaMillis = Date.now() - morseMillisAtPress;
+          let char = determineMorseChar(deltaMillis)
+
+
+          outputEl.value += char;
+        })
+
+        outputEl.addEventListener('focus', function (e) {
+          this.blur()
+        })
+      }
+
+      function determineMorseChar(pressMillis) {
+        return pressMillis &lt; 250 ? '.' : '-';
+      }
+
+    </script>
+  </body>
+</html>

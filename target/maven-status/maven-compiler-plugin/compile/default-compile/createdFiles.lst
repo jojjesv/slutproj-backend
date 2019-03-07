@@ -3,6 +3,7 @@ se/johan/foodi/util/ConnectionUtils$QueryExecutionType.class
 se/johan/foodi/model/facade/StepFacade.class
 se/johan/foodi/mail/Mailer.class
 se/johan/foodi/scheduler/job/CommentReportMailJob.class
+se/johan/foodi/admin/AuthBean$AuthInput.class
 se/johan/foodi/model/Category_.class
 se/johan/foodi/model/Ingredient_.class
 se/johan/foodi/scheduler/CommentReportMailServletListener.class
@@ -26,6 +27,7 @@ se/johan/foodi/model/facade/IngredientFacade.class
 se/johan/foodi/model/facade/CategoryFacade.class
 se/johan/foodi/model/Step_.class
 se/johan/foodi/model/Comment_.class
+se/johan/foodi/filter/CorsFilter.class
 se/johan/foodi/util/ConnectionUtils.class
 se/johan/foodi/admin/InitializerBean.class
 se/johan/foodi/model/Category.class

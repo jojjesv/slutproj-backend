@@ -5,6 +5,8 @@
  */
 package se.johan.foodi.scheduler;
 
+import javax.ejb.EJB;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.quartz.SchedulerException;
@@ -19,8 +21,12 @@ public class CommentReportMailServletListener implements ServletContextListener 
   private static Logger logger =
     LoggerFactory.getLogger(CommentReportMailServletListener.class);
   
+  
   @Override
   public void contextInitialized(ServletContextEvent sce) {
+    if (true) {
+      return;
+    }
     try {
       new CommentReportMailScheduler().schedule();
     } catch (SchedulerException ex) {

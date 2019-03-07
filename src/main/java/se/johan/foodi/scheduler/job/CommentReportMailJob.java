@@ -6,12 +6,15 @@
 package se.johan.foodi.scheduler.job;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.jobs.ee.ejb.EJBInvokerJob;
 import se.johan.foodi.mail.Mailer;
 import se.johan.foodi.model.Comment;
 import se.johan.foodi.model.facade.CommentFacade;
@@ -20,7 +23,8 @@ import se.johan.foodi.model.facade.CommentFacade;
  *
  * @author johan
  */
-public class CommentReportMailJob implements Job {
+@Stateless
+public class CommentReportMailJob extends EJBInvokerJob {
 
   @EJB
   private CommentFacade commentFacade;

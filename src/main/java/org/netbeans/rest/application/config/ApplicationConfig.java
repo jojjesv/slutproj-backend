@@ -33,6 +33,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(se.johan.foodi.RequestHandler.class);
+    resources.add(se.johan.foodi.filter.CorsFilter.class);
     }
     
     
