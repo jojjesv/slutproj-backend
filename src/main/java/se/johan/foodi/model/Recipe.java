@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -247,10 +248,18 @@ public class Recipe implements Serializable {
     if (ingredients == null || ingredients.size() == 0) {
       return "";
     }
+    
+    //  For distincting ingredients
+    List<String> usedIngredients = new LinkedList<>();
 
     StringBuilder sb = new StringBuilder();
     for (Ingredient ingredient : ingredients) {
-      sb.append(ingredient.getName());
+      String name = ingredient.getName();
+      if (usedIngredients.contains(name)) {
+        continue;
+      }
+      sb.append(name);
+      usedIngredients.add(name);
       sb.append(",");
     }
 

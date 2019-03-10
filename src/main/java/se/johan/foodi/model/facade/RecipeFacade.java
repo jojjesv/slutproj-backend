@@ -25,8 +25,9 @@ public class RecipeFacade extends AbstractFacade<Recipe> {
         return em;
     }
     
+    @Deprecated
     public void clearCache(Object entity) {
-      em.refresh(entity);
+      //em.refresh(entity);
     }
 
     public RecipeFacade() {

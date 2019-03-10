@@ -79,8 +79,11 @@
     <c:if test="#{authBean.authorized}">
       <div class="ui-grid">
         <div class="ui-grid-col-6">
-          <h:form>
-            <p:commandButton icon="fa fa-plus" action="#{recipeBean.createRecipe}" value="New recipe" />
+          <h:form class="recipe-list-form">
+            <p:commandButton icon="fa fa-plus" action="#{recipeBean.createRecipe}"
+                             value="New recipe" class="reloadable">
+              <p:ajax disabled="true" />
+            </p:commandButton>
 
             <p:dataGrid value="#{recipeBean.recipes}" var="recipe" columns="2" styleClass="recipe-list">
               <div class="recipe-item">
@@ -106,7 +109,9 @@
                 <h2>Basic info</h2>
               </div>
               <div class="ui-grid-col-4">
-                <p:commandButton action="#{recipeBean.deleteRecipe}" icon="fa fa-times" value="Remove recipe" />
+                <p:commandButton action="#{recipeBean.deleteRecipe}"
+                                 icon="fa fa-times" value="Remove recipe"
+                                 class="reloadable"/>
               </div>
             </h:form>
 
@@ -214,7 +219,7 @@
                 <div class="ui-grid-col-12">
                   <p:commandButton value="Update recipe"
                                    action="#{recipeBean.updateRecipe}"
-                                   icon="fa fa-save"/>
+                                   icon="fa fa-save" class="reloadable"/>
                 </div>
               </div>
 
@@ -257,6 +262,16 @@
           </c:if>
         </div>
       </div>
+
+      <script>
+        window.onload = function () {
+          for (let target of document.getElementsByClassName("reloadable")) {
+            target.onclick = function () {
+              window.location.reload();
+            }
+          }
+        }
+      </script>
     </c:if>
 
     <c:if test="#{!authBean.authorized}">

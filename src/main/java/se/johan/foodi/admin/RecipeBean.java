@@ -20,6 +20,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ValueChangeEvent;
+import org.eclipse.persistence.indirection.IndirectList;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
@@ -279,6 +280,8 @@ public class RecipeBean {
     List<String> ingreds = target.getPendingIngredients();
 
     //  clear existing relations
+    List<RecipeIngredient> oldRelations = new IndirectList<>();
+    oldRelations.addAll(target.getRecipeIngredientCollection());
     target.getRecipeIngredientCollection().clear();
     target.getCategoryList().clear();
 
@@ -289,6 +292,7 @@ public class RecipeBean {
 
       if (createPendingCat = pendingCat == null) {
         pendingCat = new Category(pendingCatName);
+        pendingCat.setRecipeList(new IndirectList<Recipe>());
       }
       pendingCat.getRecipeList().add(target);
 
@@ -328,10 +332,20 @@ public class RecipeBean {
       pk.setIngredient(pendingIngrName);
       pk.setRecipeId(target.getId());
 
-      RecipeIngredient relation = new RecipeIngredient();
-      relation.setRecipe(target);
-      relation.setIngredient1(pendingIngr);
-      relation.setRecipeIngredientPK(pk);
+      RecipeIngredient relation = null;
+      for (RecipeIngredient oldRel : oldRelations) {
+        if (oldRel.getIngredient1().getName().equalsIgnoreCase(pendingIngrName)) {
+          relation = oldRel;
+          break;
+        }
+      }
+
+      if (relation == null) {
+        relation = new RecipeIngredient();
+        relation.setRecipe(target);
+        relation.setIngredient1(pendingIngr);
+        relation.setRecipeIngredientPK(pk);
+      }
 
       try {
         target.getRecipeIngredientCollection().add(relation);
