@@ -5,6 +5,7 @@
  */
 package se.johan.foodi;
 
+import se.johan.foodi.model.RecipeIngredient;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import java.sql.SQLException;

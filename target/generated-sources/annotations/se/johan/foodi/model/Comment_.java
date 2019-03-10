@@ -8,7 +8,7 @@ import se.johan.foodi.model.Comment;
 import se.johan.foodi.model.CommentLike;
 import se.johan.foodi.model.Recipe;
 
-@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-08T15:07:41")
+@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-10T11:12:57")
 @StaticMetamodel(Comment.class)
 public class Comment_ { 
 

@@ -1,6 +1,7 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/RequestFacade.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/facade/AdminFacade.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/facade/CommentFacade.java
+/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/RecipeIngredient.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/facade/IngredientFacade.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/recipe/RecipeData.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler/job/CommentReportMailJob.java
@@ -10,7 +11,6 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/admin/InitializerBean.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler2/CommentReportMailBean.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/service/RecipeService.java
-/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/RecipeIngredientPK.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Admin.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Category.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/util/ConnectionUtils.java
@@ -18,6 +18,7 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/admin/AuthBean.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Recipe.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/util/RequestUtils.java
+/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/RecipeIngredientPK.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/Ingredient.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/mail/Mailer.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/org/netbeans/rest/application/config/ApplicationConfig.java
@@ -33,4 +34,3 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler/job/CommentReportMailTemplateBuilder.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler/CommentReportMailScheduler.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/filter/CorsFilter.java
-/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/RecipeIngredient.java

@@ -5,13 +5,13 @@ import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
-import se.johan.foodi.RecipeIngredient;
 import se.johan.foodi.model.Category;
 import se.johan.foodi.model.Comment;
 import se.johan.foodi.model.Ingredient;
+import se.johan.foodi.model.RecipeIngredient;
 import se.johan.foodi.model.Step;
 
-@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-08T15:07:41")
+@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-10T11:12:57")
 @StaticMetamodel(Recipe.class)
 public class Recipe_ { 
 
