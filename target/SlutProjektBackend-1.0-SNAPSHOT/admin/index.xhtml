@@ -152,13 +152,19 @@
                     </div>
                   </div>
                   <div>
-                    <p:fileUpload
-                      mode="simple"
-                      fileLimit="1"
-                      sizeLimit="1000000"
-                      skinSimple="true"
-                      allowTypes="/(\.|\/)(png|jp(e?)g|gif)$/"
-                      value="#{recipeBean.selectedRecipeUploadedFile}" />
+                    <div>
+                      <p:outputLabel for="input-cover-image" value="Cover image" />
+                    </div>
+                    <div>
+                      <p:fileUpload
+                        id="input-cover-image"
+                        mode="simple"
+                        fileLimit="1"
+                        sizeLimit="1000000"
+                        skinSimple="true"
+                        allowTypes="/(\.|\/)(png|jp(e?)g|gif)$/"
+                        value="#{recipeBean.selectedRecipeUploadedFile}"  />
+                    </div>
                   </div>
                 </div>
                 <div class="ui-grid-col-6">
@@ -200,7 +206,9 @@
 
                 <div class="ui-grid-col-12">
                   <div>
-                    <h2>Steps <p:commandButton value="Create" icon="fa fa-plus" action="#{recipeBean.addStep}">
+                    <h2>Steps <p:commandButton value="Create" icon="fa fa-plus"
+                                               action="#{recipeBean.addStep}"
+                                               class="reloadable">
                         <p:ajax />
                       </p:commandButton>
                     </h2>
@@ -253,6 +261,7 @@
                     </div>
                     <div class="action-container">
                       <p:commandButton icon="fa fa-times" class="btn-delete"
+                                       class="reloadable"
                                        action="#{recipeBean.deleteCommentAndRedirect(comment.id)}"/>
                     </div>
                   </div>
