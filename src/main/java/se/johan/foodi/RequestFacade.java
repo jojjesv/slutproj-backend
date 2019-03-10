@@ -8,14 +8,12 @@ package se.johan.foodi;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import se.johan.foodi.model.Category;
 import se.johan.foodi.model.Comment;
 import se.johan.foodi.model.CommentLike;
-import se.johan.foodi.model.Ingredient;
 import se.johan.foodi.model.Recipe;
 import se.johan.foodi.model.Step;
 import se.johan.foodi.model.facade.CommentFacade;
@@ -96,6 +94,8 @@ public class RequestFacade {
     }
 
     commentFacade.create(comment);
+    
+    recipe.getCommentCollection().add(comment);
   }
 
   /**
@@ -117,8 +117,10 @@ public class RequestFacade {
     }
 
     String existing = ConnectionUtils.querySingleString(
-            "SELECT 1 FROM comment_like WHERE sender_identifier = ?",
-            senderIdentifier
+            "SELECT 1 FROM comment_like WHERE sender_identifier = ?"
+              + " AND comment_id = ?",
+            senderIdentifier,
+            String.valueOf(commentId)
     );
 
     if (existing != null) {
@@ -130,6 +132,8 @@ public class RequestFacade {
     like.setCommentId(comment);
 
     commentLikeFacade.create(like);
+    
+    comment.getCommentLikeCollection().add(like);
   }
 
   /**

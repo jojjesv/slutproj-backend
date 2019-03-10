@@ -11,11 +11,23 @@ and open the template in the editor.
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui">
-  <head>
+  <h:head>
     <title>TODO supply a title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <style>
+      .login-form {
+        position: fixed;
+        left: 50%;
+        text-align: center;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .field {
+        margin: 16px 0 4px;
+      }
+
       #btn-morse-input {
         appearance: none;
         width: 120px;
@@ -41,19 +53,28 @@ and open the template in the editor.
         font-weight: 300;
       }
     </style>
-  </head>
-  <body>
-    <h:form>
+  </h:head>
+  <h:body>
+    <h:form class="login-form">
 
       <a id="btn-morse-input"></a>
-      <div>
-        <p:outputLabel for="input-username">Username</p:outputLabel>
+      <div class="field">
+        <div>
+          <p:outputLabel for="input-username">Username</p:outputLabel>
+        </div>
         <p:inputText id="input-username" value="#{authBean.authInput.username}" />
       </div>
-      <h:inputText class="morse-input" id="morse-result"
-                   value="#{authBean.authInput.password}" />
 
-      <p:commandButton value="Login" action="#{authBean.loginAndRedirect()}" />
+      <div class="field">
+        <div>
+          <p:outputLabel for="input-username">Code</p:outputLabel>
+        </div>
+        <p:inputText class="morse-input" id="morse-result"
+                     value="#{authBean.authInput.password}" />
+      </div>
+      <div style="text-align:right;margin-top:24px">
+        <p:commandButton value="Login" action="#{authBean.loginAndRedirect()}" />
+      </div>
     </h:form>
 
 
@@ -64,9 +85,12 @@ and open the template in the editor.
 
       window.onload = () => {
         setupMorseButton()
+        
+        document.getElementsByClassName('morse-input')[0].value = "-..--...-"
       }
 
       function setupMorseButton() {
+          console.log("setupMorseButton")
         var outputEl = document.getElementsByClassName("morse-input")[0]
         var btn = document.getElementById('btn-morse-input');
         btn.addEventListener('mousedown', function (e) {
@@ -92,9 +116,10 @@ and open the template in the editor.
       }
 
       function determineMorseChar(pressMillis) {
-        return pressMillis &lt; 250 ? '.' : '-';
+        return pressMillis &lt;
+        250 ? '.' : '-';
       }
 
     </script>
-  </body>
+  </h:body>
 </html>

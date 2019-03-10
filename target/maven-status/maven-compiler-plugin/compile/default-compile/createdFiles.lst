@@ -8,6 +8,7 @@ se/johan/foodi/model/Category_.class
 se/johan/foodi/model/Ingredient_.class
 se/johan/foodi/scheduler/CommentReportMailServletListener.class
 se/johan/foodi/RecipeIngredient_.class
+se/johan/foodi/scheduler2/CommentReportMailBean.class
 se/johan/foodi/admin/AuthBean.class
 se/johan/foodi/service/RecipeService.class
 se/johan/foodi/model/Admin_.class

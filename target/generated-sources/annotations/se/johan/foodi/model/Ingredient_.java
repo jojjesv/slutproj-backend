@@ -8,7 +8,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import se.johan.foodi.RecipeIngredient;
 import se.johan.foodi.model.Recipe;
 
-@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-07T11:47:55")
+@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-08T15:07:41")
 @StaticMetamodel(Ingredient.class)
 public class Ingredient_ { 
 

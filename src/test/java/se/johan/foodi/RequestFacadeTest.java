@@ -107,7 +107,7 @@ public class RequestFacadeTest {
     JSONArray expResult = null;
     JSONArray result = instance.getRecipePreviews(facade);
     
-    assertTrue("There are some fetched recipes", result.size() > 0);
+    assertTrue("There aren't any fetched recipes", result.size() > 0);
     
     assertEquals(expResult, result);
     container.close();

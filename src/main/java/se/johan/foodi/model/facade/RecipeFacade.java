@@ -24,6 +24,10 @@ public class RecipeFacade extends AbstractFacade<Recipe> {
     protected EntityManager getEntityManager() {
         return em;
     }
+    
+    public void clearCache(Object entity) {
+      em.refresh(entity);
+    }
 
     public RecipeFacade() {
         super(Recipe.class);

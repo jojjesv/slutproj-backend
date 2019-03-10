@@ -47,4 +47,10 @@ public class CommentFacade extends AbstractFacade<Comment> {
 
         return getEntityManager().createQuery(cq).getResultList();
     }
+    
+    public void test() {
+      getEntityManager().createQuery(
+        ""
+      ).setParameter("", "").executeUpdate();
+    }
 }

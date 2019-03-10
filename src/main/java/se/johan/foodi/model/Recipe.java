@@ -6,6 +6,10 @@
 package se.johan.foodi.model;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +33,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.persistence.annotations.UuidGenerator;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.johan.foodi.RecipeIngredient;
 
@@ -46,6 +51,39 @@ import se.johan.foodi.RecipeIngredient;
   , @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")
   , @NamedQuery(name = "Recipe.findByImageUri", query = "SELECT r FROM Recipe r WHERE r.imageUri = :imageUri")})
 public class Recipe implements Serializable {
+  
+  private static final Logger logger = LoggerFactory.getLogger(Recipe.class);
+  
+  private static final char[] ID_ALLOWED_CHARS =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYX0123456789".toCharArray();
+  
+  public static String generateId(Connection connection) throws SQLException {
+    StringBuilder sb = new StringBuilder();
+    
+    ResultSet checkStmtResult;
+    PreparedStatement checkStmt = connection.prepareStatement(
+      "SELECT 1 FROM recipe WHERE id = ?"
+    );
+    int length = 32;
+    
+    do {
+      sb.setLength(0);
+      
+      for (int i = 0; i < length; i++) {
+        sb.append(Recipe.ID_ALLOWED_CHARS[
+          (int)Math.floor(Recipe.ID_ALLOWED_CHARS.length * Math.random())]
+        );
+      }
+      
+      checkStmt.setString(1, sb.toString());
+      checkStmtResult = checkStmt.executeQuery();
+      
+    } while (checkStmtResult.next());
+    
+    //  value is guaranteed unique
+    
+    return sb.toString();
+  }
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
   private Collection<RecipeIngredient> recipeIngredientCollection;
@@ -280,6 +318,7 @@ public class Recipe implements Serializable {
 
   @XmlTransient
   public Collection<Step> getStepCollection() {
+    logger.info("[recipe] getStepCollection (items=" + stepCollection.size() + ")");
     return stepCollection;
   }
 

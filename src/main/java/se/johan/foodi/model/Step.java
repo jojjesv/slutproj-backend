@@ -43,7 +43,7 @@ public class Step implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 0, max = 255)
     @Column(name = "text")
     private String text;
     @Basic(optional = false)

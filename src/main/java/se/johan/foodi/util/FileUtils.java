@@ -16,35 +16,41 @@ import se.johan.foodi.admin.RecipeBean;
  */
 public class FileUtils {
 
-    private static final char[] DEFAULT_FILE_CHAR_SET
-            = "abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ0123456789"
-                    .toCharArray();
+  private static final char[] DEFAULT_FILE_CHAR_SET
+    = "abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ0123456789"
+      .toCharArray();
 
-    /**
-     * Generates a unique file name target for an uploaded file.
-     *
-     * @param extension File extension with leading dot
-     */
-    public static String generateFileIdentifier(Path parentDir) {
-        StringBuilder builder = new StringBuilder();
-        String basePathStr = parentDir.toString() + "/";
-
-        Path path = Paths.get(basePathStr);
-
-        int strLength = 32;
-        char[] strCharSet = DEFAULT_FILE_CHAR_SET;
-
-        do {
-
-            builder.setLength(0);
-            for (int i = 0; i < strLength; i++) {
-                builder.append(
-                        strCharSet[(int) Math.floor(Math.random() * strCharSet.length)]
-                );
-            }
-
-        } while (Files.exists(Paths.get(basePathStr, builder.toString())));
-
-        return builder.toString();
+  /**
+   * Generates a unique file name target for an uploaded file.
+   *
+   * @param extension File extension with leading dot
+   */
+  public static String generateFileIdentifier(Path parentDir, String extension) {
+    if (extension == null) {
+      extension = "";
     }
+    
+    StringBuilder builder = new StringBuilder();
+    String basePathStr = parentDir.toString() + "/";
+
+    Path path = Paths.get(basePathStr);
+
+    int strLength = 32 - extension.length();
+    char[] strCharSet = DEFAULT_FILE_CHAR_SET;
+
+    do {
+
+      builder.setLength(0);
+      for (int i = 0; i < strLength; i++) {
+        builder.append(
+          strCharSet[(int) Math.floor(Math.random() * strCharSet.length)]
+        );
+      }
+
+      builder.append(extension);
+
+    } while (Files.exists(Paths.get(basePathStr, builder.toString())));
+
+    return builder.toString();
+  }
 }

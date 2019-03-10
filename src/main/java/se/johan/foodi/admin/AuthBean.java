@@ -107,6 +107,9 @@ public class AuthBean {
     if (authorize()) {
       return "/admin/index.xhtml";
     }
+    
+    //  reset password
+    authInput.setPassword("");
 
     return "/index.xhtml";
   }
