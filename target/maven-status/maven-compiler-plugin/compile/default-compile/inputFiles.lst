@@ -33,4 +33,5 @@
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/model/facade/AbstractFacade.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler/job/CommentReportMailTemplateBuilder.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/scheduler/CommentReportMailScheduler.java
+/home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/test/TestHelper.java
 /home/johan/NetBeansProjects/SlutProjektBackend/src/main/java/se/johan/foodi/filter/CorsFilter.java

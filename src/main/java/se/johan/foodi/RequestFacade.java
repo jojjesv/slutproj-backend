@@ -20,6 +20,7 @@ import se.johan.foodi.model.Step;
 import se.johan.foodi.model.facade.CommentFacade;
 import se.johan.foodi.model.facade.CommentLikeFacade;
 import se.johan.foodi.model.facade.RecipeFacade;
+import se.johan.foodi.test.TestHelper;
 import se.johan.foodi.util.ConnectionUtils;
 
 /**
@@ -53,12 +54,12 @@ public class RequestFacade {
     return comments;
   }
 
-  public void postComment(String recipeId, String author, String message)
+  public Comment postComment(String recipeId, String author, String message)
           throws SQLException, IllegalArgumentException {
-    postComment(recipeId, author, message, null);
+    return postComment(recipeId, author, message, null);
   }
 
-  public void postComment(String recipeId, String author, String message,
+  public Comment postComment(String recipeId, String author, String message,
           Integer replyToId)
           throws SQLException, IllegalArgumentException {
     if (message.length() < 1) {
@@ -97,6 +98,8 @@ public class RequestFacade {
     commentFacade.create(comment);
     
     recipe.getCommentCollection().add(comment);
+    
+    return comment;
   }
 
   /**
@@ -146,6 +149,11 @@ public class RequestFacade {
     JSONArray output = new JSONArray();
 
     for (Recipe r : recipes) {
+      if (r.getName().equalsIgnoreCase(TestHelper.TEST_RECIPE_NAME)) {
+        //  is test recipe; don't use
+        continue;
+      }
+      
       JSONObject entry = new JSONObject();
       entry.put("id", r.getId());
       entry.put("imageUrl", r.getImageUrl());

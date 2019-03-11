@@ -163,6 +163,7 @@
                         sizeLimit="1000000"
                         skinSimple="true"
                         allowTypes="/(\.|\/)(png|jp(e?)g|gif)$/"
+                        label="Choose an image"
                         value="#{recipeBean.selectedRecipeUploadedFile}"  />
                     </div>
                   </div>
@@ -260,8 +261,7 @@
                       </p>
                     </div>
                     <div class="action-container">
-                      <p:commandButton icon="fa fa-times" class="btn-delete"
-                                       class="reloadable"
+                      <p:commandButton icon="fa fa-times" class="btn-delete reloadable"
                                        action="#{recipeBean.deleteCommentAndRedirect(comment.id)}"/>
                     </div>
                   </div>

@@ -22,6 +22,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.johan.foodi.model.Recipe;
 import se.johan.foodi.model.facade.RecipeFacade;
 import se.johan.foodi.util.RequestUtils;
@@ -33,26 +35,14 @@ import se.johan.foodi.util.RequestUtils;
  */
 @Path("")
 public class RequestHandler {
+  
+  private static Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
   @EJB
   RequestFacade requestFacade;
 
   @EJB
   RecipeFacade recipeFacade;
-
-  @POST
-  @Path("recipes")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response addRecipe(String body) {
-    try {
-      JSONObject obj = JSON.parseObject(body);
-
-      return Response.status(201).entity(body).build();
-    } catch (Exception e) {
-      return Response.serverError().build();
-    }
-  }
 
   /**
    * Outputs all comments for a recipe.
@@ -123,16 +113,9 @@ public class RequestHandler {
       out.put("message", e.getMessage());
       return Response.status(400).entity(out.toJSONString()).build();
 
-    } catch (SQLException e) {
-
-      e.printStackTrace();
-      return Response.serverError().build();
-
     } catch (Exception e) {
-
-      e.printStackTrace();
+      logger.error("[postComment] error", e);
       return Response.serverError().build();
-
     }
 
   }
@@ -167,28 +150,15 @@ public class RequestHandler {
       requestFacade.likeComment(commentId, obj.getString("senderIdentifier"));
 
       return Response.status(201).build();
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException | EJBException e) {
 
       JSONObject out = new JSONObject();
       out.put("message", e.getMessage());
       return Response.status(400).entity(out.toJSONString()).build();
-
-    } catch (EJBException e) {
-
-      JSONObject out = new JSONObject();
-      out.put("message", e.getMessage());
-      return Response.status(400).entity(out.toJSONString()).build();
-
-    } catch (SQLException e) {
-
-      e.printStackTrace();
-      return Response.serverError().build();
 
     } catch (Exception e) {
-
-      e.printStackTrace();
+      logger.error("[likeComment] error", e);
       return Response.serverError().build();
-
     }
 
   }
@@ -224,7 +194,7 @@ public class RequestHandler {
 
     } catch (Exception e) {
 
-      e.printStackTrace();
+      logger.error("[reportComment] error", e);
       return Response.serverError().build();
 
     }
