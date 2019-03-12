@@ -40,6 +40,7 @@ se/johan/foodi/model/RecipeIngredient.class
 se/johan/foodi/model/Ingredient.class
 se/johan/foodi/model/Step.class
 se/johan/foodi/model/facade/CommentLikeFacade.class
+se/johan/foodi/test/TestHelper.class
 se/johan/foodi/admin/AuthBean$AuthData.class
 se/johan/foodi/scheduler/CommentReportMailScheduler.class
 se/johan/foodi/model/facade/CommentFacade.class

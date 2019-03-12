@@ -91,7 +91,7 @@ public class RecipeBean {
 
   public String setSelectedRecipe(Recipe selectedRecipe) {
     this.selectedRecipe = selectedRecipe;
-    logger.info("Selecting recipe with id: " + selectedRecipe.getId() + "and step size: " + selectedRecipe.getStepCollection().size());
+    logger.info("Selecting recipe with id: " + selectedRecipe.getId() + "and step size: " + selectedRecipe.getSteps().size());
     return "index";
   }
 
@@ -170,18 +170,18 @@ public class RecipeBean {
    */
   public String addStep() {
     Recipe recipe = selectedRecipe;
-    int nextPosition = recipe.getStepCollection().size() + 1;
+    int nextPosition = recipe.getSteps().size() + 1;
 
     logger.info("invoked addStep() (nextPosition=" + nextPosition + ")");
 
     Step step = new Step();
-    step.setRecipeId(recipe);
+    step.setRecipe(recipe);
     step.setPosition((short) nextPosition);
     step.setText("");
 
     stepFacade.create(step);
 
-    recipe.getStepCollection().add(step);
+    recipe.getSteps().add(step);
 
     try {
       recipeFacade.edit(recipe);
@@ -230,7 +230,7 @@ public class RecipeBean {
 
       persistAll(recipe);
 
-      for (Step s : recipe.getStepCollection()) {
+      for (Step s : recipe.getSteps()) {
         logger.info("Saving step with text: " + s.getText());
       }
 
@@ -257,7 +257,7 @@ public class RecipeBean {
       categoryList.add(jpgCat);
     }
 
-    target.setCategoryList(categoryList);
+    target.setCategories(categoryList);
   }
 
   private void persistPendingIngredients(Recipe target) {
@@ -268,7 +268,7 @@ public class RecipeBean {
       ingredientList.add(jpaIngr);
     }
 
-    target.setIngredientList(ingredientList);
+    target.setIngredients(ingredientList);
   }
 
   /**
@@ -281,8 +281,8 @@ public class RecipeBean {
 
     //  clear existing relations
     List<RecipeIngredient> oldRelations = new IndirectList<>();
-    oldRelations.addAll(target.getRecipeIngredientCollection());
-    target.getRecipeIngredientCollection().clear();
+    oldRelations.addAll(target.getIngredientRelations());
+    target.getIngredientRelations().clear();
     target.getCategoryList().clear();
 
     for (String pendingCatName : cats) {
@@ -292,9 +292,9 @@ public class RecipeBean {
 
       if (createPendingCat = pendingCat == null) {
         pendingCat = new Category(pendingCatName);
-        pendingCat.setRecipeList(new IndirectList<Recipe>());
+        pendingCat.setAssociatedRecipes(new IndirectList<Recipe>());
       }
-      pendingCat.getRecipeList().add(target);
+      pendingCat.getAssociatedRecipes().add(target);
 
       try {
         if (createPendingCat) {
@@ -326,7 +326,7 @@ public class RecipeBean {
         logger.info("ex", ex);
       }
 
-      target.getIngredientList().add(pendingIngr);
+      target.getIngredients().add(pendingIngr);
 
       RecipeIngredientPK pk = new RecipeIngredientPK();
       pk.setIngredient(pendingIngrName);
@@ -334,7 +334,7 @@ public class RecipeBean {
 
       RecipeIngredient relation = null;
       for (RecipeIngredient oldRel : oldRelations) {
-        if (oldRel.getIngredient1().getName().equalsIgnoreCase(pendingIngrName)) {
+        if (oldRel.getIngredient().getName().equalsIgnoreCase(pendingIngrName)) {
           relation = oldRel;
           break;
         }
@@ -343,12 +343,12 @@ public class RecipeBean {
       if (relation == null) {
         relation = new RecipeIngredient();
         relation.setRecipe(target);
-        relation.setIngredient1(pendingIngr);
+        relation.setIngredient(pendingIngr);
         relation.setRecipeIngredientPK(pk);
       }
 
       try {
-        target.getRecipeIngredientCollection().add(relation);
+        target.getIngredientRelations().add(relation);
       } catch (Exception ex) {
         logger.info("ex", ex);
       }
@@ -464,7 +464,7 @@ public class RecipeBean {
    * @return Whether the comment was actually deleted.
    */
   public boolean deleteComment(int commentId) {
-    Collection<Comment> comments = selectedRecipe.getCommentCollection();
+    Collection<Comment> comments = selectedRecipe.getComments();
 
     for (Comment c : comments) {
       if (c.getId() == commentId) {

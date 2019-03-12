@@ -8,12 +8,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 import se.johan.foodi.model.Recipe;
 import se.johan.foodi.model.RecipeIngredient;
 
-@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-11T09:09:13")
+@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-12T10:57:51")
 @StaticMetamodel(Ingredient.class)
 public class Ingredient_ { 
 
-    public static volatile CollectionAttribute<Ingredient, RecipeIngredient> recipeIngredientCollection;
-    public static volatile ListAttribute<Ingredient, Recipe> recipeList;
+    public static volatile ListAttribute<Ingredient, Recipe> recipes;
     public static volatile SingularAttribute<Ingredient, String> name;
+    public static volatile CollectionAttribute<Ingredient, RecipeIngredient> recipeRelations;
 
 }

@@ -5,13 +5,13 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import se.johan.foodi.model.Recipe;
 
-@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-11T09:09:13")
+@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-12T10:57:51")
 @StaticMetamodel(Step.class)
 public class Step_ { 
 
+    public static volatile SingularAttribute<Step, Recipe> recipe;
     public static volatile SingularAttribute<Step, Integer> id;
     public static volatile SingularAttribute<Step, String> text;
     public static volatile SingularAttribute<Step, Short> position;
-    public static volatile SingularAttribute<Step, Recipe> recipeId;
 
 }

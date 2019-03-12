@@ -5,7 +5,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import se.johan.foodi.model.Comment;
 
-@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-11T09:09:13")
+@Generated(value="EclipseLink-2.6.1.v20150916-rNA", date="2019-03-12T10:57:51")
 @StaticMetamodel(CommentLike.class)
 public class CommentLike_ { 
 

@@ -50,7 +50,7 @@ public class CommentReportMailTemplateBuilder {
       str.append(
         String.format(
           "%s wrote on %s: %s\n",
-          c.getAuthor(), c.getRecipeId().getName(), c.getText()
+          c.getAuthor(), c.getRecipe().getName(), c.getText()
         )
       );
     }

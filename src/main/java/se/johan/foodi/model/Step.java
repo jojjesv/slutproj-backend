@@ -52,7 +52,7 @@ public class Step implements Serializable {
     private short position;
     @JoinColumn(name = "recipe_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Recipe recipeId;
+    private Recipe recipe;
 
     public Step() {
     }
@@ -91,12 +91,12 @@ public class Step implements Serializable {
         this.position = position;
     }
 
-    public Recipe getRecipeId() {
-        return recipeId;
+    public Recipe getRecipe() {
+        return recipe;
     }
 
-    public void setRecipeId(Recipe recipeId) {
-        this.recipeId = recipeId;
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     @Override

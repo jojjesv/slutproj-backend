@@ -84,7 +84,7 @@ public class RequestFacade {
     Comment comment = new Comment();
     comment.setAuthor(author);
     comment.setText(message);
-    comment.setRecipeId(recipe);
+    comment.setRecipe(recipe);
 
     if (replyToId != null) {
       Comment replyToComment = commentFacade.find(replyToId);
@@ -92,12 +92,12 @@ public class RequestFacade {
         //  Invalid reply to id
         throw new IllegalArgumentException("Invalid reply-to ID: " + replyToId);
       }
-      comment.setReplyToId(replyToComment);
+      comment.setReplyTo(replyToComment);
     }
 
     commentFacade.create(comment);
     
-    recipe.getCommentCollection().add(comment);
+    recipe.getComments().add(comment);
     
     return comment;
   }
@@ -137,7 +137,7 @@ public class RequestFacade {
 
     commentLikeFacade.create(like);
     
-    comment.getCommentLikeCollection().add(like);
+    comment.getCommentLikes().add(like);
   }
 
   /**
@@ -203,16 +203,16 @@ public class RequestFacade {
     output.put("categories", categories);
 
     JSONArray ingredients = new JSONArray();
-    for (RecipeIngredient ingr : recipe.getRecipeIngredientCollection()) {
+    for (RecipeIngredient ingr : recipe.getIngredientRelations()) {
       JSONObject obj = new JSONObject();
       obj.put("quantity", ingr.getQuantity());
-      obj.put("name", ingr.getIngredient1().getName());
+      obj.put("name", ingr.getIngredient().getName());
       ingredients.add(obj);
     }
     output.put("ingredients", ingredients);
 
     JSONArray steps = new JSONArray();
-    for (Step step : recipe.getStepCollection()) {
+    for (Step step : recipe.getSteps()) {
       JSONObject obj = new JSONObject();
       obj.put("position", step.getPosition());
       obj.put("text", step.getText());
@@ -221,8 +221,8 @@ public class RequestFacade {
     output.put("steps", steps);
 
     JSONArray comments = new JSONArray();
-    for (Comment comment : recipe.getCommentCollection()) {
-      if (comment.getReplyToId() != null) {
+    for (Comment comment : recipe.getComments()) {
+      if (comment.getReplyTo() != null) {
         //  prevent replies amongst root nodes
         continue;
       }

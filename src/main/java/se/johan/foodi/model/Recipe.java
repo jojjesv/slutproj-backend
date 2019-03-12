@@ -86,13 +86,13 @@ public class Recipe implements Serializable {
   }
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-  private Collection<RecipeIngredient> recipeIngredientCollection;
+  private Collection<RecipeIngredient> ingredientRelations;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
-  private Collection<Comment> commentCollection;
+  private Collection<Comment> comments;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
-  private Collection<Step> stepCollection;
+  private Collection<Step> steps;
 
   private static final long serialVersionUID = 1L;
   @Id
@@ -118,10 +118,10 @@ public class Recipe implements Serializable {
   private String imageUri;
 
   @ManyToMany(mappedBy = "recipeList")
-  private List<Category> categoryList;
+  private List<Category> categories;
 
   @ManyToMany(mappedBy = "recipeList")
-  private List<Ingredient> ingredientList;
+  private List<Ingredient> ingredients;
 
   @Transient
   private List<String> pendingCategories;
@@ -143,10 +143,16 @@ public class Recipe implements Serializable {
     this.imageUri = imageUri;
   }
 
+  /**
+   * @return categories as inputted strings, splitted by delimiter
+   */
   public List<String> getPendingCategories() {
     return pendingCategories;
   }
 
+  /**
+   * @return ingredients as inputted strings, splitted by delimiter
+   */
   public List<String> getPendingIngredients() {
     return pendingIngredients;
   }
@@ -195,9 +201,12 @@ public class Recipe implements Serializable {
 
   @XmlTransient
   public List<Category> getCategoryList() {
-    return categoryList;
+    return categories;
   }
 
+  /**
+   * @return joined categories string
+   */
   public String getCategoriesString() {
     List<Category> categories = getCategoryList();
 
@@ -223,21 +232,21 @@ public class Recipe implements Serializable {
     return sb.toString();
   }
 
-  public void setCategoryList(List<Category> categoryList) {
-    this.categoryList = categoryList;
+  public void setCategories(List<Category> categories) {
+    this.categories = categories;
   }
 
   @XmlTransient
-  public List<Ingredient> getIngredientList() {
-    return ingredientList;
+  public List<Ingredient> getIngredients() {
+    return ingredients;
   }
 
-  public void setIngredientList(List<Ingredient> ingredientList) {
-    this.ingredientList = ingredientList;
+  public void setIngredients(List<Ingredient> ingredients) {
+    this.ingredients = ingredients;
   }
 
   public String getIngredientsString() {
-    List<Ingredient> ingredients = getIngredientList();
+    List<Ingredient> ingredients = getIngredients();
 
     /*
     LoggerFactory.getLogger(Recipe.class).info("Has ingredients: " + String.valueOf(ingredients.size()));
@@ -325,23 +334,22 @@ public class Recipe implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Step> getStepCollection() {
-    logger.info("[recipe] getStepCollection (items=" + stepCollection.size() + ")");
-    return stepCollection;
+  public Collection<Step> getSteps() {
+    return steps;
   }
 
-  public void setStepCollection(Collection<Step> stepCollection) {
-    this.stepCollection = stepCollection;
+  public void setSteps(Collection<Step> steps) {
+    this.steps = steps;
   }
 
   @XmlTransient
-  public Collection<Comment> getCommentCollection() {
-    return commentCollection;
+  public Collection<Comment> getComments() {
+    return comments;
   }
   
   public Collection<Comment> getReportedComments() {
     Collection<Comment> items = new ArrayList<>();
-    for (Comment c : commentCollection) {
+    for (Comment c : comments) {
       if (c.getReported()) {
         items.add(c);
       }
@@ -350,17 +358,17 @@ public class Recipe implements Serializable {
     return items;
   }
 
-  public void setCommentCollection(Collection<Comment> commentCollection) {
-    this.commentCollection = commentCollection;
+  public void setComments(Collection<Comment> comments) {
+    this.comments = comments;
   }
 
   @XmlTransient
-  public Collection<RecipeIngredient> getRecipeIngredientCollection() {
-    return recipeIngredientCollection;
+  public Collection<RecipeIngredient> getIngredientRelations() {
+    return ingredientRelations;
   }
 
-  public void setRecipeIngredientCollection(Collection<RecipeIngredient> recipeIngredientCollection) {
-    this.recipeIngredientCollection = recipeIngredientCollection;
+  public void setIngredientRelations(Collection<RecipeIngredient> ingredientRelations) {
+    this.ingredientRelations = ingredientRelations;
   }
 
 }

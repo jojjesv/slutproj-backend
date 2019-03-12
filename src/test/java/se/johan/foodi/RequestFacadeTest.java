@@ -146,8 +146,8 @@ public class RequestFacadeTest {
     Recipe original = instance.getRecipe(recipeId);
     boolean recipeContainsReply = false;
     
-    for (Comment c : original.getCommentCollection()) {
-      if (c.getId() == replyComment.getId() && c.getReplyToId().getId() == replyToId) {
+    for (Comment c : original.getComments()) {
+      if (c.getId() == replyComment.getId() && c.getReplyTo().getId() == replyToId) {
         recipeContainsReply = true;
         break;
       }

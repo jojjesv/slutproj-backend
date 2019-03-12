@@ -45,7 +45,7 @@ public class Category implements Serializable {
         @JoinColumn(name = "category", referencedColumnName = "name")}, inverseJoinColumns = {
         @JoinColumn(name = "recipe_id", referencedColumnName = "id")})
     @ManyToMany
-    private List<Recipe> recipeList;
+    private List<Recipe> associatedRecipes;
 
     public Category() {
     }
@@ -63,12 +63,12 @@ public class Category implements Serializable {
     }
 
     @XmlTransient
-    public List<Recipe> getRecipeList() {
-        return recipeList;
+    public List<Recipe> getAssociatedRecipes() {
+        return associatedRecipes;
     }
 
-    public void setRecipeList(List<Recipe> recipeList) {
-        this.recipeList = recipeList;
+    public void setAssociatedRecipes(List<Recipe> recipeList) {
+        this.associatedRecipes = recipeList;
     }
 
     @Override

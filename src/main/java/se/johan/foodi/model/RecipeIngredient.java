@@ -73,11 +73,11 @@ public class RecipeIngredient implements Serializable {
     this.quantity = quantity;
   }
 
-  public Ingredient getIngredient1() {
+  public Ingredient getIngredient() {
     return ingredient1;
   }
 
-  public void setIngredient1(Ingredient ingredient1) {
+  public void setIngredient(Ingredient ingredient1) {
     this.ingredient1 = ingredient1;
   }
 

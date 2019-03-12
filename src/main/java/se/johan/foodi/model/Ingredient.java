@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Ingredient implements Serializable {
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "ingredient1")
-  private Collection<RecipeIngredient> recipeIngredientCollection;
+  private Collection<RecipeIngredient> recipeRelations;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,7 +51,7 @@ public class Ingredient implements Serializable {
         @JoinColumn(name = "ingredient", referencedColumnName = "name")}, inverseJoinColumns = {
         @JoinColumn(name = "recipe_id", referencedColumnName = "id")})
     @ManyToMany()
-    private List<Recipe> recipeList;
+    private List<Recipe> recipes;
 
     public Ingredient() {
     }
@@ -69,12 +69,12 @@ public class Ingredient implements Serializable {
     }
 
     @XmlTransient
-    public List<Recipe> getRecipeList() {
-        return recipeList;
+    public List<Recipe> getRecipes() {
+        return recipes;
     }
 
-    public void setRecipeList(List<Recipe> recipeList) {
-        this.recipeList = recipeList;
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
 
     @Override
@@ -103,12 +103,12 @@ public class Ingredient implements Serializable {
     }
 
   @XmlTransient
-  public Collection<RecipeIngredient> getRecipeIngredientCollection() {
-    return recipeIngredientCollection;
+  public Collection<RecipeIngredient> getRecipeRelations() {
+    return recipeRelations;
   }
 
-  public void setRecipeIngredientCollection(Collection<RecipeIngredient> recipeIngredientCollection) {
-    this.recipeIngredientCollection = recipeIngredientCollection;
+  public void setRecipeRelations(Collection<RecipeIngredient> recipeRelations) {
+    this.recipeRelations = recipeRelations;
   }
     
 }

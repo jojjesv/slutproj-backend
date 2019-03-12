@@ -49,9 +49,9 @@ public class Comment implements Serializable {
 
   @JoinColumn(name = "recipe_id", referencedColumnName = "id")
   @ManyToOne(optional = false)
-  private Recipe recipeId;
+  private Recipe recipe;
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "commentId")
-  private Collection<CommentLike> commentLikeCollection;
+  private Collection<CommentLike> commentLikes;
 
   private static final long serialVersionUID = 1L;
   @Id
@@ -70,7 +70,7 @@ public class Comment implements Serializable {
   @Column(name = "author")
   private String author;
   @OneToMany(mappedBy = "replyToId")
-  private Collection<Comment> commentCollection;
+  private Collection<Comment> replies;
   @JoinColumn(name = "reply_to_id", referencedColumnName = "id")
   @ManyToOne
   private Comment replyToId;
@@ -113,20 +113,23 @@ public class Comment implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Comment> getCommentCollection() {
-    return commentCollection;
+  public Collection<Comment> getReplies() {
+    return replies;
   }
 
-  public void setCommentCollection(Collection<Comment> commentCollection) {
-    this.commentCollection = commentCollection;
+  public void setReplies(Collection<Comment> replies) {
+    this.replies = replies;
   }
 
-  public Comment getReplyToId() {
+  /**
+   * @returns the comment of which is instance is a reply to.
+   */
+  public Comment getReplyTo() {
     return replyToId;
   }
 
-  public void setReplyToId(Comment replyToId) {
-    this.replyToId = replyToId;
+  public void setReplyTo(Comment replyTo) {
+    this.replyToId = replyTo;
   }
 
   @Override
@@ -154,21 +157,21 @@ public class Comment implements Serializable {
     return "se.johan.foodi.model.Comment[ id=" + id + " ]";
   }
 
-  public Recipe getRecipeId() {
-    return recipeId;
+  public Recipe getRecipe() {
+    return recipe;
   }
 
-  public void setRecipeId(Recipe recipeId) {
-    this.recipeId = recipeId;
+  public void setRecipe(Recipe recipe) {
+    this.recipe = recipe;
   }
 
   @XmlTransient
-  public Collection<CommentLike> getCommentLikeCollection() {
-    return commentLikeCollection;
+  public Collection<CommentLike> getCommentLikes() {
+    return commentLikes;
   }
 
-  public void setCommentLikeCollection(Collection<CommentLike> commentLikeCollection) {
-    this.commentLikeCollection = commentLikeCollection;
+  public void setCommentLikes(Collection<CommentLike> commentLikes) {
+    this.commentLikes = commentLikes;
   }
 
   /**
@@ -180,17 +183,17 @@ public class Comment implements Serializable {
     obj.put("id", getId());
     obj.put("author", getAuthor());
     obj.put("message", getText());
-    obj.put("likeCount", getCommentLikeCollection().size());
+    obj.put("likeCount", getCommentLikes().size());
     obj.put("reported", getReported());
 
     JSONArray replies = new JSONArray();
-    for (Comment reply : getCommentCollection()) {
+    for (Comment reply : getReplies()) {
       replies.add(reply.toJSONObject(senderIdentifier));
     }
     obj.put("replies", replies);
 
     boolean currentUserLiked = false;
-    for (CommentLike like : getCommentLikeCollection()) {
+    for (CommentLike like : getCommentLikes()) {
       if (like.getSenderIdentifier().equals(senderIdentifier)) {
         currentUserLiked = true;
         break;
