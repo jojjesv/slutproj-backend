@@ -1,13 +1,10 @@
 -------------------------------------------------------------------------------
 Test set: se.johan.foodi.RequestFacadeTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.062 sec <<< FAILURE!
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.118 sec <<< FAILURE!
 se.johan.foodi.RequestFacadeTest  Time elapsed: 0 sec  <<< ERROR!
-javax.ejb.EJBException: No EJBContainer provider available: no provider names had been found.
-	at javax.ejb.embeddable.EJBContainer.reportError(EJBContainer.java:216)
-	at javax.ejb.embeddable.EJBContainer.createEJBContainer(EJBContainer.java:146)
-	at javax.ejb.embeddable.EJBContainer.createEJBContainer(EJBContainer.java:102)
-	at se.johan.foodi.RequestFacadeTest.setUpClass(RequestFacadeTest.java:41)
+java.lang.RuntimeException: javax.ejb.EJBException: No EJBContainer provider available: no provider names had been found.
+	at se.johan.foodi.RequestFacadeTest.setUpClass(RequestFacadeTest.java:49)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -30,12 +27,18 @@ javax.ejb.EJBException: No EJBContainer provider available: no provider names ha
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-se.johan.foodi.RequestFacadeTest  Time elapsed: 0.001 sec  <<< ERROR!
+Caused by: javax.ejb.EJBException: No EJBContainer provider available: no provider names had been found.
+	at javax.ejb.embeddable.EJBContainer.reportError(EJBContainer.java:216)
+	at javax.ejb.embeddable.EJBContainer.createEJBContainer(EJBContainer.java:146)
+	at javax.ejb.embeddable.EJBContainer.createEJBContainer(EJBContainer.java:102)
+	at se.johan.foodi.RequestFacadeTest.setUpClass(RequestFacadeTest.java:41)
+	... 22 more
+se.johan.foodi.RequestFacadeTest  Time elapsed: 0.002 sec  <<< ERROR!
 javax.ejb.EJBException: No EJBContainer provider available: no provider names had been found.
 	at javax.ejb.embeddable.EJBContainer.reportError(EJBContainer.java:216)
 	at javax.ejb.embeddable.EJBContainer.createEJBContainer(EJBContainer.java:146)
 	at javax.ejb.embeddable.EJBContainer.createEJBContainer(EJBContainer.java:102)
-	at se.johan.foodi.RequestFacadeTest.tearDownClass(RequestFacadeTest.java:91)
+	at se.johan.foodi.RequestFacadeTest.tearDownClass(RequestFacadeTest.java:92)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

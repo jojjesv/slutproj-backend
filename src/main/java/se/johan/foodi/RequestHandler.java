@@ -69,7 +69,7 @@ public class RequestHandler {
   public Response getRecipe(@PathParam("recipeId") String recipeId,
           @QueryParam("sid") String senderIdentifier) {
     JSONObject data;
-    data = requestFacade.getRecipe(recipeId, senderIdentifier);
+    data = requestFacade.getRecipeAsJSON(recipeId, senderIdentifier);
     if (data.containsKey("error")) {
       return Response.status(400)
               .entity(data.toJSONString()).build();
@@ -106,7 +106,7 @@ public class RequestHandler {
       requestFacade.postComment(recipeId, obj.getString("author"),
               obj.getString("message"), obj.getInteger("replyTo"));
 
-      return Response.status(201).entity(body).build();
+      return Response.status(201).build();
     } catch (IllegalArgumentException e) {
 
       JSONObject out = new JSONObject();

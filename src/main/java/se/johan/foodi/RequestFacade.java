@@ -164,6 +164,10 @@ public class RequestFacade {
 
     return output;
   }
+  
+  public Recipe getRecipe(String id) {
+    return recipeFacade.find(id);
+  }
 
   /**
    * Retrieves full info about a recipe and formats a JSON.
@@ -171,8 +175,8 @@ public class RequestFacade {
    * @param senderIdentifier Used to determine whether the current user has
    * liked specific comments.
    */
-  public JSONObject getRecipe(String id, String senderIdentifier) {
-    Recipe recipe = recipeFacade.find(id);
+  public JSONObject getRecipeAsJSON(String id, String senderIdentifier) {
+    Recipe recipe = getRecipe(id);
     JSONObject output = new JSONObject();
 
     if (senderIdentifier == null) {

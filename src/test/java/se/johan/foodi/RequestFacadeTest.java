@@ -19,6 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import se.johan.foodi.model.Comment;
 import se.johan.foodi.model.Recipe;
 import se.johan.foodi.model.facade.CommentFacade;
@@ -29,7 +31,10 @@ import se.johan.foodi.model.facade.RecipeFacade;
  *
  * @author Johan Svensson
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RequestFacadeTest {
+  
+  private static State state = new State();
 
   public RequestFacadeTest() {
   }
@@ -44,8 +49,9 @@ public class RequestFacadeTest {
       setupTestRecipe(recipeFacadeInstance);
       container.close();
 
-    } catch (IllegalStateException | SQLException ex) {
-      throw new RuntimeException("setUpClass failed", ex);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      throw new RuntimeException(ex);
     }
   }
 
@@ -106,7 +112,7 @@ public class RequestFacadeTest {
   }
 
   @Test
-  public void testPostComment() throws Exception {
+  public void testPostComment_001() throws Exception {
     String recipeId = new TestHelper().getTestRecipeId();
     String author = "sam";
     String message = "Nice recipe, loved it.";
@@ -119,24 +125,35 @@ public class RequestFacadeTest {
 
     assertThat(jpaFound.getAuthor(), equalTo(author));
     assertThat(jpaFound.getText(), equalTo(message));
+    
+    state.insertedCommentId = result.getId();
   }
 
   /**
    * Test of postComment method, of class RequestFacade.
    */
   @Test
-  public void testPostComment_asReply() throws Exception {
-    System.out.println("postComment");
-    String recipeId = "";
-    String author = "";
-    String message = "";
-    Integer replyToId = null;
+  public void testPostComment_002_asReply() throws Exception {
+    String recipeId = new TestHelper().getTestRecipeId();
+    String author = "sam";
+    String message = "Nice recipe, loved it.";
+    Integer replyToId = state.insertedCommentId;
     EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
     RequestFacade instance = (RequestFacade) container.getContext().lookup("java:global/classes/RequestFacade");
-    instance.postComment(recipeId, author, message, replyToId);
+    Comment replyComment = instance.postComment(recipeId, author, message, replyToId);
     container.close();
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    
+    Recipe original = instance.getRecipe(recipeId);
+    boolean recipeContainsReply = false;
+    
+    for (Comment c : original.getCommentCollection()) {
+      if (c.getId() == replyComment.getId() && c.getReplyToId().getId() == replyToId) {
+        recipeContainsReply = true;
+        break;
+      }
+    }
+    
+    assertThat("Recipe should have the reply", recipeContainsReply, is(true));
   }
 
   /**
@@ -187,7 +204,7 @@ public class RequestFacadeTest {
     EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
     RequestFacade instance = (RequestFacade) container.getContext().lookup("java:global/classes/RequestFacade");
     JSONObject expResult = null;
-    JSONObject result = instance.getRecipe(id, senderIdentifier);
+    JSONObject result = instance.getRecipeAsJSON(id, senderIdentifier);
     assertEquals(expResult, result);
     container.close();
     // TODO review the generated test code and remove the default call to fail.
@@ -209,6 +226,10 @@ public class RequestFacadeTest {
     container.close();
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
+  }
+  
+  private static class State {
+    public Integer insertedCommentId;
   }
 
 }

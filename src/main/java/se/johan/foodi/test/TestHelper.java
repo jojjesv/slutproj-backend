@@ -17,6 +17,7 @@ import se.johan.foodi.util.ConnectionFactory;
  */
 public class TestHelper {
   public static final String TEST_RECIPE_NAME = "__test";
+  public static final String TEST_SENDER_IDENTIFIER = "__sid";
   
   public String getTestRecipeId() throws IllegalStateException, SQLException {
     try (Connection c = ConnectionFactory.getConnection()) {
