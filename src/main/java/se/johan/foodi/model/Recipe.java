@@ -88,10 +88,10 @@ public class Recipe implements Serializable {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
   private Collection<RecipeIngredient> ingredientRelations;
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
   private Collection<Comment> comments;
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipeId")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
   private Collection<Step> steps;
 
   private static final long serialVersionUID = 1L;
@@ -117,10 +117,10 @@ public class Recipe implements Serializable {
   @Column(name = "image_uri", nullable = true)
   private String imageUri;
 
-  @ManyToMany(mappedBy = "recipeList")
+  @ManyToMany(mappedBy = "associatedRecipes")
   private List<Category> categories;
 
-  @ManyToMany(mappedBy = "recipeList")
+  @ManyToMany(mappedBy = "recipes")
   private List<Ingredient> ingredients;
 
   @Transient

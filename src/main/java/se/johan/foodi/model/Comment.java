@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
   , @NamedQuery(name = "Comment.findById", query = "SELECT c FROM Comment c WHERE c.id = :id")
   , @NamedQuery(name = "Comment.findByText", query = "SELECT c FROM Comment c WHERE c.text = :text")
   , @NamedQuery(name = "Comment.findByAuthor", query = "SELECT c FROM Comment c WHERE c.author = :author")
-  , @NamedQuery(name = "Comment.findByRecipeId", query = "SELECT c FROM Comment c WHERE c.recipeId = :recipeId")})
+  , @NamedQuery(name = "Comment.findByRecipeId", query = "SELECT c FROM Comment c WHERE c.recipe = :recipe")})
 public class Comment implements Serializable {
 
   @Basic(optional = false)
