@@ -23,14 +23,15 @@ public abstract class ConnectionFactory {
    * @return a new, established connection to the database.
    */
   public static Connection getConnection() throws SQLException {
-    String host = "mysql", username = "root", password = "seppo";
+    boolean useDockerLink = false;
+    //  whether to disable ssl (in docker container)
+    boolean disableSsl = useDockerLink;
+    
+    String host = useDockerLink ? "mysql" : "localhost", username = "root", password = useDockerLink ? "seppo" : "";
 
     System.out.println("[getConnection] host=" + host);
 
     String db = "foodi";
-
-    //  whether to disable ssl (in docker container)
-    boolean disableSsl = true;
 
     try {
       Class.forName("com.mysql.jdbc.Driver");
