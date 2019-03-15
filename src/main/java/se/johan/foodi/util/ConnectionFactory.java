@@ -15,27 +15,33 @@ import java.sql.SQLException;
  */
 public abstract class ConnectionFactory {
 
-    private ConnectionFactory() {
+  private ConnectionFactory() {
 
+  }
+
+  /**
+   * @return a new, established connection to the database.
+   */
+  public static Connection getConnection() throws SQLException {
+    String host = "mysql", username = "root", password = "seppo";
+
+    System.out.println("[getConnection] host=" + host);
+
+    String db = "foodi";
+
+    //  whether to disable ssl (in docker container)
+    boolean disableSsl = true;
+
+    try {
+      Class.forName("com.mysql.jdbc.Driver");
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
 
-    /**
-     * @return a new, established connection to the database.
-     */
-    public static Connection getConnection() throws SQLException {
-        String host = "localhost", username = "root", password = "";
-
-        String db = "foodi";
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return (Connection) DriverManager.getConnection(
-                "jdbc:mysql://" + host + "/" + db,
-                username, password
-        );
-    }
+    return (Connection) DriverManager.getConnection(
+      "jdbc:mysql://" + host + "/" + db + (disableSsl
+        ? "?useSSL=false&allowPublicKeyRetrieval=true" : ""),
+      username, password
+    );
+  }
 }

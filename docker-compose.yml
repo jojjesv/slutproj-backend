@@ -5,6 +5,7 @@ services:
     build: .
     ports:
       - 8080:8080
+      - 4848:4848
     links: 
       - mysql:mysql
   mysql:
@@ -13,8 +14,7 @@ services:
     ports:
       - 3306:3306
     volumes: 
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    environment: 
-      MYSQL_USER: root
-      MYSQL_PASSWORD: seppo
+      - /var/data/foodimysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: seppo
     restart: always

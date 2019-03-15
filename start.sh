@@ -6,6 +6,7 @@
 # waiting for mysql to start up
 sleep 5
 
+echo Using WAR file: `ls /*.war`
 /usr/local/glassfish4/bin/asadmin start-domain
 /usr/local/glassfish4/bin/asadmin -u admin deploy `ls /*.war`
 /usr/local/glassfish4/bin/asadmin stop-domain
