@@ -185,6 +185,12 @@ public class Comment implements Serializable {
     obj.put("message", getText());
     obj.put("likeCount", getCommentLikes().size());
     obj.put("reported", getReported());
+    
+    if (getReplyTo() != null) {
+      //  this is a reply
+      
+      obj.put("isReply", true);
+    }
 
     JSONArray replies = new JSONArray();
     for (Comment reply : getReplies()) {

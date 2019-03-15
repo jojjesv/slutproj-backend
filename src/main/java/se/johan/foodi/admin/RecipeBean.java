@@ -20,6 +20,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ValueChangeEvent;
+import javax.validation.ConstraintViolationException;
 import org.eclipse.persistence.indirection.IndirectList;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -67,6 +68,8 @@ public class RecipeBean {
   @EJB
   StepFacade stepFacade;
 
+  private String errorMessage = null;
+
   @EJB
   private CommentFacade commentFacade;
 
@@ -83,6 +86,28 @@ public class RecipeBean {
   public void setSelectedRecipeUploadedFile(UploadedFile selectedRecipeUploadedFile) {
     logger.info("setSelectedRecipeUploadedFile hello");
     this.selectedRecipeUploadedFile = selectedRecipeUploadedFile;
+  }
+
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  /**
+   * @return The executable error message wrapped as a script tag.
+   */
+  public String getErrorMessageScript() {
+    if (errorMessage == null) {
+      return null;
+    }
+
+    return String.format(
+      "<script>alert('%s');</script>",
+      errorMessage
+    );
+  }
+
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
   }
 
   public Recipe getSelectedRecipe() {
@@ -228,6 +253,7 @@ public class RecipeBean {
 
     try {
 
+      recipe.arrangeSteps();
       persistAll(recipe);
 
       for (Step s : recipe.getSteps()) {
@@ -237,7 +263,14 @@ public class RecipeBean {
       persistPendingCategories(recipe);
       persistPendingIngredients(recipe);
 
-      recipeFacade.edit(recipe);
+      try {
+        recipeFacade.edit(recipe);
+      } catch (Exception ex) {
+        //  mysql validation likely failed
+        //  not sure if this is a ConstraintValidationException/EJBException?? nothing works
+        this.errorMessage = "Provide more recipe info.";
+        return "index";
+      }
 
     } catch (SQLException sqlE) {
       logger.error("updateRecipe()", sqlE);
@@ -249,10 +282,19 @@ public class RecipeBean {
     return "index";
   }
 
+  /**
+   * Ensures that categories are persisted.
+   *
+   * @param target Recipe of which to read categories from.
+   */
   private void persistPendingCategories(Recipe target) {
     List<Category> categoryList = new ArrayList<Category>();
 
     for (String cat : target.getPendingCategories()) {
+      if (cat == null || cat.isEmpty()) {
+        continue;
+      }
+
       Category jpgCat = categoryFacade.find(cat);
       categoryList.add(jpgCat);
     }
@@ -260,10 +302,18 @@ public class RecipeBean {
     target.setCategories(categoryList);
   }
 
+  /**
+   * Ensures that ingredients are persisted.
+   *
+   * @param target Recipe of which to read ingredients from.
+   */
   private void persistPendingIngredients(Recipe target) {
     List<Ingredient> ingredientList = new ArrayList<Ingredient>();
 
     for (String ingr : target.getPendingIngredients()) {
+      if (ingr == null || ingr.isEmpty()) {
+        continue;
+      }
       Ingredient jpaIngr = ingredientFacade.find(ingr);
       ingredientList.add(jpaIngr);
     }
@@ -286,6 +336,10 @@ public class RecipeBean {
     target.getCategoryList().clear();
 
     for (String pendingCatName : cats) {
+      if (pendingCatName == null || pendingCatName.isEmpty()) {
+        continue;
+      }
+
       //  insert pending
       Category pendingCat = categoryFacade.find(pendingCatName);
       boolean createPendingCat = false;
@@ -309,6 +363,10 @@ public class RecipeBean {
       target.getCategoryList().add(pendingCat);
     }
     for (String pendingIngrName : ingreds) {
+      if (pendingIngrName == null || pendingIngrName.isEmpty()) {
+        continue;
+      }
+
       //  insert pending
       boolean createPendingIngr = false;
       Ingredient pendingIngr = ingredientFacade.find(pendingIngrName);
@@ -348,7 +406,24 @@ public class RecipeBean {
       }
 
       try {
-        target.getIngredientRelations().add(relation);
+        Collection<RecipeIngredient> relations = target.getIngredientRelations();
+        while (true) {
+          //  we want to break out of this while loop on command
+          for (RecipeIngredient ri : relations) {
+            Ingredient ingr = ri.getIngredient();
+            if (ingr == null) {
+              break;  //  don't add
+            }
+
+            if (ingr.getName().equals(relation.getIngredient().getName())) {
+              //  skip duplicate
+              break;
+            }
+          }
+          relations.add(relation);
+
+          break;
+        }
       } catch (Exception ex) {
         logger.info("ex", ex);
       }
@@ -468,10 +543,17 @@ public class RecipeBean {
 
     for (Comment c : comments) {
       if (c.getId() == commentId) {
-        //  TODO: update local state??
         comments.remove(c);
 
         commentFacade.remove(c);
+        
+        Recipe assocRecipe = c.getRecipe();
+        
+        if (assocRecipe.getComments().remove(c)) {
+          //  update the local state for recipe as well, otherwise comment is still shown in frontend
+          recipeFacade.edit(assocRecipe);
+        }
+        
         return true;
       }
     }

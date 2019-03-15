@@ -107,7 +107,7 @@ public class RequestHandler {
               obj.getString("message"), obj.getInteger("replyTo"));
 
       return Response.status(201).build();
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException | EJBException e) {
 
       JSONObject out = new JSONObject();
       out.put("message", e.getMessage());

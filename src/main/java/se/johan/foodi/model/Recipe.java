@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Basic;
@@ -142,6 +143,19 @@ public class Recipe implements Serializable {
     this.name = name;
     this.imageUri = imageUri;
   }
+  
+  /**
+   * Ensures that the steps have correct position.
+   */
+  public void arrangeSteps() {
+    int i = 1;
+    Iterator<Step> itr = steps.iterator();
+    
+    while (itr.hasNext()) {
+      itr.next().setPosition((short)i);
+      i++;
+    }
+  }
 
   /**
    * @return categories as inputted strings, splitted by delimiter
@@ -208,22 +222,21 @@ public class Recipe implements Serializable {
    * @return joined categories string
    */
   public String getCategoriesString() {
-    List<Category> categories = getCategoryList();
-
-    LoggerFactory.getLogger(Recipe.class).info("there are " + String.valueOf(categories.size()) + " categories");
-
-    for (Category cat : categories) {
-      LoggerFactory.getLogger(Recipe.class).info("cat_ " + cat.getName());
-    }
-
-    if (categories == null || categories.size() == 0) {
+    if (categories == null || categories.isEmpty()) {
       return "";
     }
 
     StringBuilder sb = new StringBuilder();
     for (Category cat : categories) {
+      if (cat == null) {
+        continue;
+      }
       sb.append(cat.getName());
       sb.append(",");
+    }
+    
+    if (sb.length() == 0) {
+      return "";
     }
 
     //  remove trailing delimiter
@@ -246,15 +259,13 @@ public class Recipe implements Serializable {
   }
 
   public String getIngredientsString() {
-    List<Ingredient> ingredients = getIngredients();
-
     /*
     LoggerFactory.getLogger(Recipe.class).info("Has ingredients: " + String.valueOf(ingredients.size()));
     for (Ingredient ingr : ingredients) {
       LoggerFactory.getLogger(Recipe.class).info("using ingredient: " + ingr.getName());
     }
      */
-    if (ingredients == null || ingredients.size() == 0) {
+    if (ingredients == null || ingredients.isEmpty()) {
       return "";
     }
     
@@ -263,6 +274,9 @@ public class Recipe implements Serializable {
 
     StringBuilder sb = new StringBuilder();
     for (Ingredient ingredient : ingredients) {
+      if (ingredient == null) {
+        continue;
+      }
       String name = ingredient.getName();
       if (usedIngredients.contains(name)) {
         continue;
@@ -270,6 +284,10 @@ public class Recipe implements Serializable {
       sb.append(name);
       usedIngredients.add(name);
       sb.append(",");
+    }
+    
+    if (sb.length() == 0) {
+      return "";
     }
 
     //  remove trailing delimiter

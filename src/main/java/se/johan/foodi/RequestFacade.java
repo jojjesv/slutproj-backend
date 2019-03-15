@@ -44,6 +44,7 @@ public class RequestFacade {
   /**
    * @return all comments for a specific recipe.
    */
+  @Deprecated
   public List<Comment> getComments(String recipeId) throws SQLException, IllegalArgumentException {
     if (recipeId.length() < 1) {
       throw new IllegalArgumentException("Provide a recipe ID");
@@ -93,11 +94,16 @@ public class RequestFacade {
         throw new IllegalArgumentException("Invalid reply-to ID: " + replyToId);
       }
       comment.setReplyTo(replyToComment);
+      replyToComment.getReplies().add(comment);
+      commentFacade.edit(replyToComment);
     }
 
     commentFacade.create(comment);
     
     recipe.getComments().add(comment);
+    
+    //  we need this to update on the admin page
+    recipeFacade.edit(recipe);
     
     return comment;
   }
